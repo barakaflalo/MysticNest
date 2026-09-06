@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d0d10">
+<title>MysticNest · מיסטיק</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* ============ PALETTES ============ */
+:root{
+  --bg:#0d0d10; --bg2:#15151b; --card:#17171e; --line:#2a2a35;
+  --txt:#f3ecd8; --dim:#9a927e; --gold:#d4af37; --gold2:#f0d67a;
+  --accent:#d4af37; --danger:#c0553f; --ok:#4a9e6a; --shadow:rgba(0,0,0,.5);
+  --star:rgba(212,175,55,.9);
+}
+[data-pal="royal"]{ --bg:#0b0d1a; --bg2:#111633; --card:#141a38; --line:#2b345f; --txt:#e8e9f5; --dim:#8790b8; --gold:#8a7cff; --gold2:#b3a9ff; --accent:#8a7cff; --star:rgba(179,169,255,.9); }
+[data-pal="ember"]{ --bg:#1a0d0a; --bg2:#2a1310; --card:#241210; --line:#4a251d; --txt:#f5e6dc; --dim:#b89383; --gold:#e07a4f; --gold2:#f0a074; --accent:#e07a4f; --star:rgba(224,122,79,.9); }
+[data-pal="emerald"]{ --bg:#08130f; --bg2:#0d2019; --card:#0e1e17; --line:#204035; --txt:#e3f0e8; --dim:#7fa593; --gold:#4fbf8f; --gold2:#7cd9af; --accent:#4fbf8f; --star:rgba(79,191,143,.9); }
+[data-pal="rose"]{ --bg:#160a12; --bg2:#241020; --card:#20101c; --line:#42213a; --txt:#f5e4ef; --dim:#b88aa8; --gold:#e075a8; --gold2:#f0a0c8; --accent:#e075a8; --star:rgba(224,117,168,.9); }
+[data-light]{ --bg:#f4f1e9; --bg2:#ece7d8; --card:#ffffff; --line:#ddd5c2; --txt:#2a2620; --dim:#7a7262; --shadow:rgba(0,0,0,.12); --star:rgba(180,140,40,.5); }
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Heebo","Segoe UI",system-ui,-apple-system,sans-serif;
+  background:var(--bg); color:var(--txt);
+  overflow-x:hidden; line-height:1.6;
+  transition:background .3s,color .3s;
+}
+body.ltr{direction:ltr}
+.wrap{max-width:640px;margin:0 auto;min-height:100%;position:relative}
+button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none}
+h1,h2,h3{line-height:1.25;font-weight:700}
+.hidden{display:none!important}
+
+/* starfield */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55}
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--star);animation:tw 3s infinite ease-in-out}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.3)}}
+
+/* ============ HEADER ============ */
+header{
+  position:sticky;top:0;z-index:20;background:var(--bg);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;padding:12px 16px;
+}
+.brand{font-weight:800;font-size:19px;letter-spacing:.5px;color:var(--gold);display:flex;align-items:center;gap:7px}
+.brand small{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:0}
+.spacer{flex:1}
+.hbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;font-size:18px;background:var(--card);transition:.15s}
+.hbtn:active{transform:scale(.92)}
+.dot{width:9px;height:9px;border-radius:50%;background:#666;box-shadow:0 0 0 3px rgba(255,255,255,.05)}
+.dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+
+/* ============ SCREENS ============ */
+.screen{position:relative;z-index:1;padding:18px 16px 90px;animation:fade .35s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.hero{text-align:center;padding:26px 10px 20px}
+.hero .moon{font-size:52px;filter:drop-shadow(0 0 18px var(--gold));animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.hero h1{font-size:30px;margin:10px 0 4px;background:linear-gradient(120deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--dim);font-size:14px}
+
+.tiles{display:grid;gap:14px;margin-top:8px}
+.tile{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:20px 18px;display:flex;align-items:center;gap:16px;text-align:start;
+  transition:.18s;position:relative;overflow:hidden;
+}
+.tile:active{transform:scale(.98);border-color:var(--gold)}
+.tile .ic{font-size:34px;width:56px;height:56px;border-radius:14px;display:grid;place-items:center;background:var(--bg2);border:1px solid var(--line);flex-shrink:0}
+.tile .tx h3{font-size:18px;color:var(--gold)}
+.tile .tx p{font-size:13px;color:var(--dim);margin-top:2px}
+.tile .arr{margin-inline-start:auto;color:var(--dim);font-size:20px}
+
+.backbtn{
+  display:inline-flex;align-items:center;gap:8px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:10px 16px;
+  font-weight:600;font-size:15px;margin-bottom:16px;transition:.15s;
+}
+.backbtn:active{transform:scale(.95)}
+.stitle{font-size:23px;color:var(--gold);margin-bottom:4px}
+.ssub{color:var(--dim);font-size:14px;margin-bottom:18px}
+
+/* ============ INPUTS / BUTTONS ============ */
+.field{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--txt);font-size:15px;font-family:inherit;resize:vertical;transition:.15s}
+.field:focus{outline:none;border-color:var(--gold)}
+textarea.field{min-height:110px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  background:linear-gradient(120deg,var(--gold),var(--gold2));color:#1a1508;font-weight:800;
+  border-radius:14px;padding:15px;font-size:16px;transition:.15s;margin-top:14px;
+}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5}
+.btn.ghost{background:var(--card);color:var(--txt);border:1px solid var(--line)}
+.btn.ghost:active{border-color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:9px 15px;font-size:14px;font-weight:600;transition:.15s}
+.chip.sel{background:var(--gold);color:#1a1508;border-color:var(--gold)}
+.chip:active{transform:scale(.94)}
+.lbl{font-size:14px;font-weight:700;color:var(--txt);margin:16px 0 8px;display:block}
+
+/* ============ TAROT CARDS ============ */
+.spread{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:18px 0}
+.tcard{
+  width:130px;perspective:900px;cursor:pointer;flex-shrink:0;
+}
+.tcard .inner{position:relative;width:100%;height:200px;transition:transform .7s;transform-style:preserve-3d}
+.tcard.flip .inner{transform:rotateY(180deg)}
+.tcard .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;border:1px solid var(--line);text-align:center}
+.tcard .back{background:linear-gradient(150deg,var(--bg2),var(--card));border-color:var(--gold)}
+.tcard .back .sym{font-size:40px;filter:drop-shadow(0 0 10px var(--gold))}
+.tcard .back .pos{position:absolute;bottom:8px;font-size:11px;color:var(--dim)}
+.tcard .front{background:var(--card);transform:rotateY(180deg);gap:4px}
+.tcard .front.rev{background:linear-gradient(180deg,var(--card),var(--bg2))}
+.tcard .front .em{font-size:34px}
+.tcard .front .rev-em{transform:rotate(180deg);display:inline-block}
+.tcard .front .nm{font-size:14px;font-weight:800;color:var(--gold);line-height:1.2}
+.tcard .front .en{font-size:10px;color:var(--dim)}
+.tcard .front .tag{font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--dim);margin-top:2px}
+.tcard .front .tag.r{color:var(--danger);border-color:var(--danger)}
+
+.reading{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:8px;animation:fade .4s}
+.reading .rc{padding:12px 0;border-bottom:1px solid var(--line)}
+.reading .rc:last-child{border-bottom:none}
+.reading .rc .h{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--gold);font-size:16px}
+.reading .rc .p{font-size:12px;color:var(--dim);font-weight:600;margin-inline-start:auto}
+.reading .rc .m{font-size:14px;margin-top:6px;color:var(--txt)}
+
+/* ai answer box */
+.ai-box{background:linear-gradient(160deg,var(--bg2),var(--card));border:1px solid var(--gold);border-radius:16px;padding:16px;margin-top:14px;animation:fade .4s}
+.ai-box .hd{display:flex;align-items:center;gap:8px;color:var(--gold);font-weight:800;margin-bottom:8px;font-size:15px}
+.ai-box .bd{font-size:15px;white-space:pre-wrap}
+.spin{width:20px;height:20px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp 0.8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ============ FORTUNE ============ */
+.cookie{text-align:center;padding:20px 0}
+.cookie .big{font-size:80px;filter:drop-shadow(0 0 20px var(--gold));cursor:pointer;transition:.2s;animation:float 5s ease-in-out infinite}
+.cookie .big:active{transform:scale(.9)}
+.fortune-msg{background:var(--card);border:1px solid var(--gold);border-radius:16px;padding:22px;margin-top:16px;font-size:18px;line-height:1.7;animation:fade .5s;position:relative}
+.fortune-msg::before{content:"❝";color:var(--gold);font-size:30px;opacity:.4;position:absolute;top:6px;inset-inline-start:12px}
+.fortune-lucky{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.fortune-lucky .n{width:42px;height:42px;border-radius:50%;background:var(--bg2);border:1px solid var(--gold);display:grid;place-items:center;font-weight:800;color:var(--gold)}
+
+/* ============ HISTORY ============ */
+.hist-item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.hist-item .hi{font-size:24px}
+.hist-item .ht{flex:1;min-width:0}
+.hist-item .ht b{font-size:14px;display:block}
+.hist-item .ht span{font-size:12px;color:var(--dim);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-item .hd{font-size:11px;color:var(--dim)}
+.empty{text-align:center;color:var(--dim);padding:30px 20px;font-size:14px}
+
+/* ============ SETTINGS / ABOUT ============ */
+.grp{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:16px;overflow:hidden}
+.grp .gh{padding:12px 16px;font-weight:800;color:var(--gold);font-size:14px;border-bottom:1px solid var(--line)}
+.row{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row .ri{font-size:20px}
+.row .rt{flex:1}
+.row .rt b{font-size:15px;display:block}
+.row .rt span{font-size:12px;color:var(--dim)}
+.row:active{background:var(--bg2)}
+.swatch{display:flex;gap:10px;padding:14px 16px;flex-wrap:wrap}
+.sw{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);cursor:pointer;transition:.15s}
+.sw.sel{border-color:var(--txt);transform:scale(1.12)}
+.aboutlogo{text-align:center;padding:20px}
+.aboutlogo .l{font-size:56px;filter:drop-shadow(0 0 16px var(--gold))}
+.aboutlogo h2{color:var(--gold);margin-top:8px}
+.aboutlogo .v{color:var(--dim);font-size:13px}
+
+.disc{font-size:12px;color:var(--dim);text-align:center;padding:16px;line-height:1.6;border-top:1px solid var(--line);margin-top:8px}
+.badge{text-align:center;padding:20px;color:var(--dim);font-size:12px}
+.badge b{color:var(--gold)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:grid;place-items:center;padding:20px;animation:fade .2s}
+.modal .box{background:var(--card);border:1px solid var(--gold);border-radius:18px;padding:20px;max-width:420px;width:100%;max-height:85vh;overflow:auto}
+.modal h3{color:var(--gold);margin-bottom:12px}
+.provlist{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.prov{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;transition:.15s}
+.prov.sel{border-color:var(--gold);background:var(--bg2)}
+.prov .pi{font-size:22px}
+.prov .pt{flex:1}
+.prov .pt b{font-size:14px}
+.prov .ptag{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:700}
+.ptag.free{background:var(--ok);color:#fff}
+.ptag.api{background:var(--gold);color:#1a1508}
+.ptag.local{background:#6a7;color:#fff}
+.selectf{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--txt);font-size:14px;font-family:inherit}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--gold);border-radius:12px;padding:12px 20px;z-index:100;font-size:14px;font-weight:600;box-shadow:0 6px 20px var(--shadow);animation:fade .2s}
+.small{font-size:12px;color:var(--dim);line-height:1.6}
+a{color:var(--gold)}
+.pro-tag{font-size:10px;background:var(--gold);color:#1a1508;padding:2px 8px;border-radius:8px;font-weight:800;margin-inline-start:6px}
+
+/* onboarding */
+.ob{position:fixed;inset:0;background:var(--bg);z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+.ob .oi{font-size:64px;filter:drop-shadow(0 0 16px var(--gold));margin-bottom:16px}
+.ob h2{color:var(--gold);font-size:26px;margin-bottom:10px}
+.ob p{color:var(--dim);max-width:340px;margin-bottom:20px}
+.ob .dots{display:flex;gap:8px;margin-bottom:20px}
+.ob .od{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.ob .od.on{background:var(--gold);width:22px;border-radius:4px}
+</style>
+</head>
+<body data-pal="gold">
+<div id="stars"></div>
+<div class="wrap">
+
+<!-- HEADER -->
+<header>
+  <div class="brand">🔮 <span id="brandName">MysticNest</span></div>
+  <div class="spacer"></div>
+  <div class="dot" id="aiDot" title="AI"></div>
+  <button class="hbtn" onclick="go('settings')" title="⚙️">⚙️</button>
+  <button class="hbtn" onclick="go('about')" title="ℹ️">ℹ️</button>
+</header>
+
+<!-- HOME -->
+<div class="screen" id="s-home">
+  <div class="hero">
+    <div class="moon">🌙</div>
+    <h1 id="heroTitle">מיסטיק</h1>
+    <p id="heroSub">קלפי טארוט · פירוש חלומות · עוגיית מזל</p>
+  </div>
+  <div class="tiles">
+    <button class="tile" onclick="go('tarot')">
+      <div class="ic">🔮</div>
+      <div class="tx"><h3 id="tTarot">טארוט</h3><p id="tTarotD">שאל שאלה ושלוף קלפים</p></div>
+      <div class="arr">‹</div>
+    </button>
+    <button class="tile" onclick="go('dream')">
+      <div class="ic">🌙</div>
+      <div class="tx"><h3 id="tDream">פירוש חלומות</h3><p id="tDreamD">ספר על חלום וגלה את משמעותו</p></div>
+      <div class="arr">‹</div>
+    </button>
+    <button class="tile" onclick="go('fortune')">
+      <div class="ic">🥠</div>
+      <div class="tx"><h3 id="tFortune">עוגיית מזל יומית</h3><p id="tFortuneD">מסר אחד ליום</p></div>
+      <div class="arr">‹</div>
+    </button>
+  </div>
+  <div id="backupReminder"></div>
+  <div class="disc" id="homeDisc">✨ לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ מקצועי.</div>
+</div>
+
+<!-- TAROT -->
+<div class="screen hidden" id="s-tarot">
+  <button class="backbtn" onclick="go('home')">› <span id="back1">חזרה</span></button>
+  <h2 class="stitle" id="tarotH">🔮 קריאת טארוט</h2>
+  <p class="ssub" id="tarotSub">חשוב על שאלה, בחר פריסה, ושלוף את הקלפים.</p>
+
+  <label class="lbl" id="lblQ">השאלה שלך (אופציונלי)</label>
+  <input class="field" id="tarotQ" placeholder="למשל: מה כדאי לי לדעת השבוע?">
+
+  <label class="lbl" id="lblSpread">בחר פריסה</label>
+  <div class="chips" id="spreadChips"></div>
+
+  <button class="btn" id="drawBtn" onclick="drawTarot()">🎴 <span id="drawTxt">שלוף קלפים</span></button>
+
+  <div id="tarotResult"></div>
+</div>
+
+<!-- DREAM -->
+<div class="screen hidden" id="s-dream">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="dreamH">🌙 פירוש חלומות</h2>
+  <p class="ssub" id="dreamSub">תאר את החלום במילים שלך — ככל שתפרט יותר, כך הפירוש יהיה עשיר יותר.</p>
+
+  <label class="lbl" id="lblDream">מה חלמת?</label>
+  <textarea class="field" id="dreamText" placeholder="למשל: חלמתי שאני עף מעל הים ופתאום נפלתי..."></textarea>
+
+  <button class="btn" onclick="interpretDream()">🌙 <span id="dreamTxt">פרש את החלום</span></button>
+
+  <div id="dreamResult"></div>
+</div>
+
+<!-- FORTUNE -->
+<div class="screen hidden" id="s-fortune">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="fortuneH">🥠 עוגיית המזל היומית</h2>
+  <p class="ssub" id="fortuneSub">מסר אחד ליום. חזור מחר למסר חדש.</p>
+  <div class="cookie" id="cookieArea"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen hidden" id="s-settings">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="setH">⚙️ הגדרות</h2>
+  <p class="ssub"></p>
+
+  <div class="grp">
+    <div class="gh" id="ghGeneral">כללי</div>
+    <div class="row" onclick="editName()">
+      <div class="ri">👤</div><div class="rt"><b id="rName">שם משתמש</b><span id="rNameV">—</span></div><div>‹</div>
+    </div>
+    <div class="row" onclick="cycleLang()">
+      <div class="ri">🌐</div><div class="rt"><b id="rLang">שפה</b><span id="rLangV">עברית</span></div><div>‹</div>
+    </div>
+    <div class="row" onclick="toggleLight()">
+      <div class="ri">🌗</div><div class="rt"><b id="rTheme">מצב יום / לילה</b><span id="rThemeV">לילה</span></div><div>‹</div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="gh" id="ghPal">ערכת צבע</div>
+    <div class="swatch" id="swatches"></div>
+  </div>
+
+  <div class="grp">
+    <div class="gh" id="ghAI">בינה מלאכותית (Pro)</div>
+    <div class="row" onclick="openAI()">
+      <div class="ri">🤖</div><div class="rt"><b id="rAI">חיבור בינה</b><span id="rAIV">לא מחובר</span></div><div>‹</div>
+    </div>
+    <div class="small" style="padding:0 16px 12px" id="aiHint">האפליקציה עובדת במלואה בלי בינה. חיבור מפתח אישי מוסיף פירושים אישיים ומעמיקים.</div>
+  </div>
+
+  <div class="grp">
+    <div class="gh" id="ghData">נתונים</div>
+    <div class="row" onclick="doExport()"><div class="ri">💾</div><div class="rt"><b id="rBackup">גיבוי (ייצוא)</b><span id="rBackupD">שמור את ההיסטוריה שלך</span></div><div>‹</div></div>
+    <div class="row" onclick="doImport()"><div class="ri">📥</div><div class="rt"><b id="rRestore">שחזור (ייבוא)</b><span id="rRestoreD">טען מקובץ גיבוי</span></div><div>‹</div></div>
+    <div class="row" onclick="clearAll()"><div class="ri">🗑️</div><div class="rt"><b id="rClear" style="color:var(--danger)">מחק הכל</b><span id="rClearD">איפוס מלא</span></div><div>‹</div></div>
+  </div>
+  <input type="file" id="importFile" accept=".json" class="hidden" onchange="importFile(event)">
+</div>
+
+<!-- ABOUT -->
+<div class="screen hidden" id="s-about">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <div class="aboutlogo">
+    <div class="l">🔮</div>
+    <h2>MysticNest</h2>
+    <div class="v" id="aboutVer">גרסה 1.0</div>
+  </div>
+  <div class="grp">
+    <div class="row"><div class="ri">📦</div><div class="rt"><b id="abVer">גרסה</b><span>1.0</span></div></div>
+    <div class="row"><div class="ri">👨‍💻</div><div class="rt"><b id="abDev">פותח</b><span>Barak Aflalo</span></div></div>
+    <div class="row"><div class="ri">📱</div><div class="rt"><b id="abPlat">פלטפורמה</b><span>PWA · HTML5</span></div></div>
+    <div class="row"><div class="ri">🔒</div><div class="rt"><b id="abStore">אחסון</b><span id="abStoreV">על המכשיר בלבד</span></div></div>
+    <div class="row"><div class="ri">©️</div><div class="rt"><b id="abLic">רישיון</b><span>© AppNest 2026</span></div></div>
+  </div>
+  <div class="grp">
+    <div class="row" onclick="openStore()"><div class="ri">🏪</div><div class="rt"><b id="abStoreLink">חנות AppNest</b><span>עוד אפליקציות</span></div><div>‹</div></div>
+    <div class="row" onclick="shareApp()"><div class="ri">📤</div><div class="rt"><b id="abShare">שתף את האפליקציה</b></div><div>‹</div></div>
+    <div class="row" onclick="sendFeedback()"><div class="ri">✉️</div><div class="rt"><b id="abFeedback">שלח משוב</b><span>appnest55@gmail.com</span></div><div>‹</div></div>
+    <div class="row" onclick="openPrivacy()"><div class="ri">🔒</div><div class="rt"><b id="abPrivacy">מדיניות פרטיות</b></div><div>‹</div></div>
+    <div class="row" onclick="showGuide()"><div class="ri">📖</div><div class="rt"><b id="abGuide">מדריך שימוש</b></div><div>‹</div></div>
+  </div>
+  <div class="disc" id="aboutDisc"></div>
+  <div class="badge">✨ <b>AppNest</b> · 2026</div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+/* =========================================================
+   MysticNest — AppNest single-file app
+   ========================================================= */
+const VERSION="1.0";
+const PREFIX="mystic_";
+
+/* ---------- storage shim ---------- */
+const mem={};
+const DB={
+  get(k){try{const v=localStorage.getItem(PREFIX+k);return v===null?null:v}catch(e){return mem[k]??null}},
+  set(k,v){try{localStorage.setItem(PREFIX+k,v)}catch(e){mem[k]=v}},
+  del(k){try{localStorage.removeItem(PREFIX+k)}catch(e){delete mem[k]}},
+  getJSON(k,d){const v=this.get(k);if(v===null)return d;try{return JSON.parse(v)}catch(e){return d}},
+  setJSON(k,o){this.set(k,JSON.stringify(o))}
+};
+
+/* ---------- state ---------- */
+let state={
+  lang: DB.get('lang')||'he',
+  pal: DB.get('pal')||'gold',
+  light: DB.get('light')==='1',
+  name: DB.get('name')||'',
+  spread: 'three',
+};
+
+</script>
+<script>
+// ===== ARCANA GEDOLA (Major Arcana) — 22 cards =====
+// Each card: id, name(he), name(en), emoji, keywords, upright, reversed
+// Meanings are original Hebrew phrasings of the classic esoteric symbolism (public-domain Rider-Waite tradition).
+const TAROT_MAJOR = [
+  { id:0, arc:"major", he:"השוטה", en:"The Fool", icon:"🃏",
+    up:"התחלה חדשה, קפיצה אל הלא-נודע, תמימות ואמון בדרך. הזמן לצעד ראשון גם בלי לדעת לאן הוא מוביל.",
+    rev:"פזיזות, קפיצה בלי לחשוב, פחד להתחיל. אולי כדאי לעצור רגע ולבדוק לאן הרגליים לוקחות אותך." },
+  { id:1, arc:"major", he:"הקוסם", en:"The Magician", icon:"🪄",
+    up:"כוח ליצור, כל הכלים כבר בידיך. רצון, מיומנות ומיקוד שהופכים כוונה למציאות.",
+    rev:"כוח שלא בא לידי מימוש, מניפולציה, כישרון מבוזבז. הפער בין מה שאתה יכול למה שאתה עושה." },
+  { id:2, arc:"major", he:"הכוהנת הגדולה", en:"The High Priestess", icon:"🌙",
+    up:"אינטואיציה, ידע נסתר, הקשבה פנימית. התשובה נמצאת בשקט שבפנים, לא ברעש שבחוץ.",
+    rev:"ניתוק מהקול הפנימי, סודות שמכבידים, התעלמות מתחושת בטן. משהו מוסתר — גם ממך עצמך." },
+  { id:3, arc:"major", he:"הקיסרית", en:"The Empress", icon:"👑",
+    up:"שפע, פוריות, יצירה וטיפוח. תקופה שבה דברים גדלים — רעיון, מערכת יחסים, יצירה.",
+    rev:"חסימה יצירתית, הזנחה עצמית, תלות. השפע קיים אבל משהו מונע ממנו לזרום." },
+  { id:4, arc:"major", he:"הקיסר", en:"The Emperor", icon:"🏛️",
+    up:"סמכות, מבנה, יציבות ושליטה. הזמן לקחת אחריות, לבנות סדר ולהוביל בביטחון.",
+    rev:"נוקשות, שליטת-יתר, סמכות שהתערערה. יותר מדי כוח או דווקא מחסור במסגרת." },
+  { id:5, arc:"major", he:"הכוהן הגדול", en:"The Hierophant", icon:"🗝️",
+    up:"מסורת, ידע, מורה או מסגרת רוחנית. ערך בלמידה מהמנוסים ובדרך הסלולה.",
+    rev:"מרד במוסכמות, דרך משלך, ספק במורים. הזמן לשאול אם הכללים באמת שלך." },
+  { id:6, arc:"major", he:"הנאהבים", en:"The Lovers", icon:"💞",
+    up:"אהבה, חיבור עמוק, בחירה של הלב. שותפות שמבוססת על ערכים משותפים.",
+    rev:"חוסר הרמוניה, בחירה קשה, ערכים מתנגשים. משהו במערכת היחסים דורש יישור קו." },
+  { id:7, arc:"major", he:"המרכבה", en:"The Chariot", icon:"🐎",
+    up:"ניצחון, נחישות, שליטה בכיוונים מנוגדים. קדימה בכוח רצון — אתה מחזיק במושכות.",
+    rev:"אובדן כיוון, כוחות מנוגדים שמושכים אותך, חוסר שליטה. הזמן להחליט לאן.",  },
+  { id:8, arc:"major", he:"הכוח", en:"Strength", icon:"🦁",
+    up:"כוח פנימי, אומץ שקט, ריסון בעדינות. לא בכוח הזרוע אלא ברוגע והחמלה.",
+    rev:"ספק עצמי, כוח שנשבר, שליטה שאבדה. חוסר אמון ביכולת שלך להתמודד." },
+  { id:9, arc:"major", he:"המתבודד", en:"The Hermit", icon:"🕯️",
+    up:"התבוננות פנימה, חיפוש אמת, בדידות מרפאה. תקופה של שקט וחשבון נפש.",
+    rev:"בידוד מוגזם, בריחה מהעולם, או דווקא סירוב להקשיב לעצמך. יותר מדי או מעט מדי לבד." },
+  { id:10, arc:"major", he:"גלגל המזל", en:"Wheel of Fortune", icon:"🎡",
+    up:"מפנה, מזל, מחזוריות החיים. הגלגל מסתובב — משהו משתנה לטובה.",
+    rev:"מזל רע זמני, התנגדות לשינוי, תחושת תקיעות. הגלגל תמיד ממשיך לזוז." },
+  { id:11, arc:"major", he:"הצדק", en:"Justice", icon:"⚖️",
+    up:"אמת, איזון, אחריות למעשים. כל דבר מקבל את שמגיע לו — הוגנות וישרות.",
+    rev:"אי-צדק, התחמקות מאחריות, חוסר איזון. משהו לא הוגן דורש תיקון." },
+  { id:12, arc:"major", he:"התלוי", en:"The Hanged Man", icon:"🙃",
+    up:"נקודת מבט חדשה, ויתור מרצון, המתנה. לפעמים דווקא העצירה מגלה את הפתרון.",
+    rev:"תקיעות, קורבנוּת מיותרת, התנגדות לשחרר. אתה נאחז במשהו שהזמן שלו עבר." },
+  { id:13, arc:"major", he:"המוות", en:"Death", icon:"🦋",
+    up:"סוף שהוא התחלה, טרנספורמציה, שחרור מהישן. לא מוות פיזי — סיום שמפנה מקום לחדש.",
+    rev:"היאחזות בעבר, פחד משינוי, מעבר שנתקע. משהו צריך להסתיים ואתה מתעכב." },
+  { id:14, arc:"major", he:"המתינות", en:"Temperance", icon:"🌊",
+    up:"איזון, מיזוג, סבלנות. מציאת שביל הזהב בין קצוות — הרמוניה בעבודה איטית.",
+    rev:"חוסר איזון, קיצוניות, חוסר סבלנות. משהו יצא מפרופורציה וצריך למתן." },
+  { id:15, arc:"major", he:"השטן", en:"The Devil", icon:"⛓️",
+    up:"כבלים, פיתוי, תלות. משהו כובל אותך — הרגל, פחד, יחסים — והמפתח בידך.",
+    rev:"שחרור מכבלים, פירוק תלות, החזרת שליטה. אתה מתחיל להשתחרר." },
+  { id:16, arc:"major", he:"המגדל", en:"The Tower", icon:"🗼",
+    up:"התמוטטות פתאומית, שבירת אשליות, אמת שמתפרצת. הרס שמפנה מקום לבנייה אמיתית.",
+    rev:"הימנעות מקטסטרופה, שינוי שנדחה, פחד מקריסה. הזעזוע קטן יותר — או עוד לפנינו." },
+  { id:17, arc:"major", he:"הכוכב", en:"The Star", icon:"⭐",
+    up:"תקווה, השראה, ריפוי. אחרי הסערה מגיע אור — אמונה מתחדשת בעתיד.",
+    rev:"אובדן תקווה, ייאוש זמני, ניתוק מהחלום. האור עדיין שם, קשה לראות אותו כרגע." },
+  { id:18, arc:"major", he:"הירח", en:"The Moon", icon:"🌕",
+    up:"אשליה, פחדים סמויים, תת-מודע. לא הכול כפי שנראה — הקשב לחלומות ולתחושות.",
+    rev:"בהירות שחוזרת, פחד שמתפוגג, אמת שמתגלה. הערפל מתחיל להתפזר." },
+  { id:19, arc:"major", he:"השמש", en:"The Sun", icon:"☀️",
+    up:"שמחה, הצלחה, חיוניות. אחד הקלפים הטובים — אור, בהירות והגשמה.",
+    rev:"שמחה מעומעמת, אופטימיות מזויפת, הצלחה שמתעכבת. האושר שם אבל מוסתר מעט." },
+  { id:20, arc:"major", he:"הדין", en:"Judgement", icon:"📯",
+    up:"התעוררות, חשבון נפש, קריאה לייעוד. רגע של הבנה שמזמין אותך לשלב חדש.",
+    rev:"ספק עצמי, התעלמות מקריאה פנימית, שיפוטיות. אתה שומע את הקריאה אך מהסס לענות." },
+  { id:21, arc:"major", he:"העולם", en:"The World", icon:"🌍",
+    up:"השלמה, מימוש, סגירת מעגל. הגעת ליעד — הישג שלם ותחושת שלמות.",
+    rev:"מעגל שלא נסגר, יעד קרוב אך חמקמק, תחושת חוסר. עוד צעד קטן לפני הסיום." },
+];
+
+// ===== ARCANA KETANA (Minor Arcana) — 56 cards, 4 suits =====
+// Suits: wands(אש/מעש), cups(מים/רגש), swords(אוויר/מחשבה), pentacles(אדמה/חומר)
+const TAROT_MINOR = [
+  // ---------- מקלות / WANDS (אש — תשוקה, יצירה, מעש) ----------
+  { id:100, arc:"wands", he:"אלוף המקלות", en:"Ace of Wands", icon:"🔥",
+    up:"ניצוץ של השראה, רעיון חדש, אנרגיה מתפרצת. הזמן להתחיל משהו שמדליק אותך.",
+    rev:"עיכוב, ניצוץ שכבה, חוסר מוטיבציה. הרעיון קיים אך משהו חוסם את ההתחלה." },
+  { id:101, arc:"wands", he:"שניים במקלות", en:"Two of Wands", icon:"🗺️",
+    up:"תכנון עתיד, החלטה על כיוון, מבט קדימה. אתה שוקל לאן להרחיב.",
+    rev:"פחד מהלא-נודע, תוכניות שנתקעו, חוסר החלטיות. קשה לצאת מאזור הנוחות." },
+  { id:102, arc:"wands", he:"שלושה במקלות", en:"Three of Wands", icon:"⛵",
+    up:"התרחבות, ציפייה לתוצאות, הזדמנויות בדרך. הזרעים שזרעת מתחילים לנבוט.",
+    rev:"עיכובים, תוכניות שמשתבשות, קוצר ראייה. משהו לוקח יותר זמן מהצפוי." },
+  { id:103, arc:"wands", he:"ארבעה במקלות", en:"Four of Wands", icon:"🎉",
+    up:"חגיגה, יציבות, שמחה בבית. רגע של הרמוניה והישג שראוי לחגוג.",
+    rev:"חוסר יציבות זמני, מתח בבית, חגיגה נדחית. ההרמוניה שבירה יותר מהרגיל." },
+  { id:104, arc:"wands", he:"חמישה במקלות", en:"Five of Wands", icon:"⚔️",
+    up:"תחרות, קונפליקט, מאבק. מתח בריא של אנרגיות שמתחרות — או ויכוח שדורש פתרון.",
+    rev:"הימנעות מעימות, סיום מתח, פנימי או חיצוני. או דווקא צבירת קונפליקטים." },
+  { id:105, arc:"wands", he:"שישה במקלות", en:"Six of Wands", icon:"🏆",
+    up:"ניצחון, הכרה, הצלחה ציבורית. המאמץ שלך נראה ומוערך.",
+    rev:"הצלחה ללא הכרה, ספק בהישג, נפילה מהגובה. הניצחון פחות מוצק מכפי שנראה." },
+  { id:106, arc:"wands", he:"שבעה במקלות", en:"Seven of Wands", icon:"🛡️",
+    up:"עמידה על שלך, הגנה על עמדה, אומץ מול לחץ. אתה נלחם על מה שחשוב לך.",
+    rev:"כניעה, תשישות ממאבק, ויתור. הקרב מתיש ואתה שוקל להרפות." },
+  { id:107, arc:"wands", he:"שמונה במקלות", en:"Eight of Wands", icon:"💫",
+    up:"תנועה מהירה, חדשות, התקדמות. דברים קורים בקצב מהיר — היה מוכן.",
+    rev:"עיכובים, תסכול, קצב שנעצר. משהו האט את הזרימה." },
+  { id:108, arc:"wands", he:"תשעה במקלות", en:"Nine of Wands", icon:"🪵",
+    up:"חוסן, עמידות, קרב אחרון. עייף אך לא מובס — כמעט הגעת.",
+    rev:"שחיקה, עקשנות מיותרת, חומות הגנה גבוהות מדי. הזמן לשקול אם עדיין שווה להיאבק." },
+  { id:109, arc:"wands", he:"עשרה במקלות", en:"Ten of Wands", icon:"🎒",
+    up:"עומס, אחריות כבדה, נטל. אתה סוחב הרבה — אולי יותר מדי.",
+    rev:"שחרור עומס, האצלת אחריות, הנחת הנטל. הזמן להוריד משקל מהכתפיים." },
+  { id:110, arc:"wands", he:"נסיך המקלות", en:"Page of Wands", icon:"🧭",
+    up:"סקרנות, התלהבות, רוח הרפתקנית. רעיון חדש שמזמין אותך לחקור.",
+    rev:"חוסר כיוון, התלהבות שדועכת, פזיזות. אנרגיה שמחפשת מיקוד." },
+  { id:111, arc:"wands", he:"אביר המקלות", en:"Knight of Wands", icon:"🐴",
+    up:"תשוקה, פעולה נמרצת, הרפתקה. קדימה בלב פתוח ובאנרגיה גבוהה.",
+    rev:"פזיזות, חוסר סבלנות, אנרגיה שנשרפת מהר. תשוקה בלי תוכנית." },
+  { id:112, arc:"wands", he:"מלכת המקלות", en:"Queen of Wands", icon:"🌻",
+    up:"ביטחון, חום, כריזמה. אישיות שמאירה לסביבה — נחישות עם לב.",
+    rev:"חוסר ביטחון, קנאה, אנרגיה שהופנתה פנימה. הזוהר עומעם זמנית." },
+  { id:113, arc:"wands", he:"מלך המקלות", en:"King of Wands", icon:"👑",
+    up:"מנהיגות, חזון, יזמות. הכוח להוביל ולהצית אחרים אחריך.",
+    rev:"שתלטנות, חוסר סובלנות, חזון בלי הקשבה. כוח שנוטה להתפרץ." },
+
+  // ---------- גביעים / CUPS (מים — רגש, אהבה, יחסים) ----------
+  { id:200, arc:"cups", he:"אלוף הגביעים", en:"Ace of Cups", icon:"💧",
+    up:"אהבה חדשה, פתיחת לב, שפע רגשי. הרגשות זורמים ומשהו יפה מתחיל.",
+    rev:"לב סגור, רגש חסום, ריקנות. משהו מונע מהאהבה לזרום החוצה." },
+  { id:201, arc:"cups", he:"שניים בגביעים", en:"Two of Cups", icon:"💑",
+    up:"חיבור, שותפות, אהבה הדדית. שני לבבות שמוצאים זה את זה.",
+    rev:"חוסר איזון ביחסים, ניתוק, מתח. משהו בקשר דורש יישור." },
+  { id:202, arc:"cups", he:"שלושה בגביעים", en:"Three of Cups", icon:"🥂",
+    up:"חברות, חגיגה, קהילה. שמחה משותפת עם האנשים שאתה אוהב.",
+    rev:"בדידות, ריחוק מחברים, חגיגת יתר. משהו בחיי החברה לא מאוזן." },
+  { id:203, arc:"cups", he:"ארבעה בגביעים", en:"Four of Cups", icon:"😔",
+    up:"שיעמום, אדישות, הזדמנות שלא רואים. משהו טוב מוצע ואתה לא שם לב.",
+    rev:"התעוררות מחדש, פתיחות, קבלת הצעה. אתה מתחיל לראות שוב." },
+  { id:204, arc:"cups", he:"חמישה בגביעים", en:"Five of Cups", icon:"🌧️",
+    up:"אכזבה, אבל, התמקדות באובדן. יש כאב — אך לא הכול אבד.",
+    rev:"קבלה, החלמה, מבט קדימה. אתה מתחיל לראות את מה שנשאר." },
+  { id:205, arc:"cups", he:"שישה בגביעים", en:"Six of Cups", icon:"🎁",
+    up:"נוסטלגיה, זיכרונות, תמימות. חום מהעבר — אנשים או מקומות מוכרים.",
+    rev:"היתקעות בעבר, אידיאליזציה, קושי להתקדם. הגעגוע מושך אחורה." },
+  { id:206, arc:"cups", he:"שבעה בגביעים", en:"Seven of Cups", icon:"🌫️",
+    up:"אפשרויות רבות, דמיון, בלבול. הרבה בחירות — קשה להחליט מה אמיתי.",
+    rev:"בהירות, החלטה, מיקוד. הערפל מתפזר ואתה בוחר." },
+  { id:207, arc:"cups", he:"שמונה בגביעים", en:"Eight of Cups", icon:"🚶",
+    up:"עזיבה, חיפוש משמעות, שחרור. אתה עוזב משהו כדי למצוא משהו עמוק יותר.",
+    rev:"פחד לעזוב, היתקעות, חזרה על אותו דבר. קשה לך לוותר גם כשצריך." },
+  { id:208, arc:"cups", he:"תשעה בגביעים", en:"Nine of Cups", icon:"😊",
+    up:"סיפוק, משאלה שמתגשמת, שמחה. 'קלף המשאלה' — רגע של שביעות רצון.",
+    rev:"סיפוק שטחי, משאלה לא ממומשת, חוסר פנימי. האושר החיצוני לא ממלא." },
+  { id:209, arc:"cups", he:"עשרה בגביעים", en:"Ten of Cups", icon:"🌈",
+    up:"אושר משפחתי, הרמוניה, שלמות רגשית. חלום שהתגשם — אהבה שלמה.",
+    rev:"חוסר הרמוניה בבית, אידיאל רחוק, מתח משפחתי. התמונה המושלמת סדוקה." },
+  { id:210, arc:"cups", he:"נסיך הגביעים", en:"Page of Cups", icon:"🐚",
+    up:"רגישות, יצירתיות, הפתעה רגשית. הודעה או תחושה חדשה שנוגעת בלב.",
+    rev:"רגישות יתר, חלומות שלא מתממשים, בריחה רגשית. הרגש קצת מוצף." },
+  { id:211, arc:"cups", he:"אביר הגביעים", en:"Knight of Cups", icon:"🌹",
+    up:"רומנטיקה, קסם, הצעה מהלב. מגיע אליך משהו יפה ומלא רגש.",
+    rev:"אכזבה רומנטית, הבטחות ריקות, מצב רוח משתנה. הקסם פחות אמין." },
+  { id:212, arc:"cups", he:"מלכת הגביעים", en:"Queen of Cups", icon:"🧜",
+    up:"חמלה, אינטואיציה, אמפתיה. לב פתוח שמכיל ומרגיש עמוק.",
+    rev:"הצפה רגשית, גבולות מטושטשים, נתינת יתר. הרגש גובר על השיקול." },
+  { id:213, arc:"cups", he:"מלך הגביעים", en:"King of Cups", icon:"🔱",
+    up:"בגרות רגשית, איזון, שליטה עדינה ברגש. חכם וחומל בו-זמנית.",
+    rev:"דיכוי רגשות, תנודתיות, מניפולציה רגשית. הרוגע החיצוני מסתיר סערה." },
+
+  // ---------- חרבות / SWORDS (אוויר — מחשבה, אמת, קונפליקט) ----------
+  { id:300, arc:"swords", he:"אלוף החרבות", en:"Ace of Swords", icon:"🗡️",
+    up:"בהירות, אמת חדה, פריצת דרך מחשבתית. רעיון שחותך את הערפל.",
+    rev:"בלבול, אמת מעוותת, מחשבה מעורפלת. ההיגיון לא ברור כרגע." },
+  { id:301, arc:"swords", he:"שניים בחרבות", en:"Two of Swords", icon:"🙈",
+    up:"החלטה תקועה, איזון מתוח, הימנעות. אתה בין שתי אפשרויות ולא בוחר.",
+    rev:"בהירות שחוזרת, החלטה סוף-סוף, שחרור מבוי סתום. הזמן להסיר את הכיסוי מהעיניים." },
+  { id:302, arc:"swords", he:"שלושה בחרבות", en:"Three of Swords", icon:"💔",
+    up:"כאב לב, אכזבה, פרידה. פגיעה רגשית שצריך להכיר בה כדי לרפא.",
+    rev:"החלמה, שחרור כאב, סליחה. הלב מתחיל להירפא." },
+  { id:303, arc:"swords", he:"ארבעה בחרבות", en:"Four of Swords", icon:"🛌",
+    up:"מנוחה, התאוששות, הפוגה. הזמן לעצור ולטעון מחדש כוחות.",
+    rev:"חוסר מנוחה, שחיקה, חזרה לפעילות. אתה דוחף בלי לתת לעצמך לנוח." },
+  { id:304, arc:"swords", he:"חמישה בחרבות", en:"Five of Swords", icon:"🏴",
+    up:"קונפליקט, ניצחון במחיר, מתח. ניצחת אך משהו אבד בדרך.",
+    rev:"פיוס, סיום מריבה, למידה מהעבר. הזמן להניח את החרב." },
+  { id:305, arc:"swords", he:"שישה בחרבות", en:"Six of Swords", icon:"⛴️",
+    up:"מעבר, התרחקות מקושי, מים שקטים יותר. אתה עובר לשלב רגוע יותר.",
+    rev:"תקיעות, קושי לעזוב, מטען רגשי שנשאר. המעבר מתעכב." },
+  { id:306, arc:"swords", he:"שבעה בחרבות", en:"Seven of Swords", icon:"🦊",
+    up:"תחבולה, חמיקה, אסטרטגיה. משהו מתנהל בעורמה — שלך או של אחר.",
+    rev:"חשיפה, הודאה, סוף התחמקות. האמת מתחילה לצוף." },
+  { id:307, arc:"swords", he:"שמונה בחרבות", en:"Eight of Swords", icon:"🪢",
+    up:"תחושת מלכוד, אמונות מגבילות, שיתוק. אתה מרגיש כלוא — אך הכבלים רופפים מכפי שנדמה.",
+    rev:"שחרור, חשיבה מחדש, מציאת מוצא. אתה מתחיל להשתחרר מהמחשבות הכובלות." },
+  { id:308, arc:"swords", he:"תשעה בחרבות", en:"Nine of Swords", icon:"😰",
+    up:"חרדה, דאגות ליליות, ייסורי מחשבה. הפחד גדול מהמציאות עצמה.",
+    rev:"הקלה, התמודדות עם פחד, אור בקצה. החרדה מתחילה לשכוך." },
+  { id:309, arc:"swords", he:"עשרה בחרבות", en:"Ten of Swords", icon:"🌅",
+    up:"סוף כואב, נקודת שפל, סיום מוחלט. הגרוע מאחוריך — מכאן רק עולים.",
+    rev:"התאוששות, קימה מחדש, סירוב להיכנע. השחר עולה אחרי הלילה." },
+  { id:310, arc:"swords", he:"נסיך החרבות", en:"Page of Swords", icon:"🪁",
+    up:"סקרנות, ערנות, רעיונות חדשים. מוח חד שרוצה ללמוד ולהבין.",
+    rev:"רכילות, פזיזות מחשבתית, ביקורתיות. המילים חדות מדי." },
+  { id:311, arc:"swords", he:"אביר החרבות", en:"Knight of Swords", icon:"⚡",
+    up:"נחישות, פעולה מהירה, ישירות. קדימה בכוח ההיגיון — בלי היסוס.",
+    rev:"פזיזות, אגרסיביות, קפיצה בלי לחשוב. המהירות פוגעת בשיקול." },
+  { id:312, arc:"swords", he:"מלכת החרבות", en:"Queen of Swords", icon:"❄️",
+    up:"בהירות, כנות, עצמאות מחשבתית. חוכמה שנולדה מניסיון — ישרה וחדה.",
+    rev:"קרירות, ביקורתיות, ניתוק רגשי. ההיגיון חוסם את הלב." },
+  { id:313, arc:"swords", he:"מלך החרבות", en:"King of Swords", icon:"🧠",
+    up:"היגיון, סמכות אינטלקטואלית, שיפוט צלול. החלטה שכלתנית והוגנת.",
+    rev:"נוקשות מחשבתית, ניצול הכוח, קרירות. ההיגיון הופך לנשק." },
+
+  // ---------- מטבעות / PENTACLES (אדמה — חומר, כסף, גוף, עבודה) ----------
+  { id:400, arc:"pentacles", he:"אלוף המטבעות", en:"Ace of Pentacles", icon:"🪙",
+    up:"הזדמנות חומרית, התחלה יציבה, שפע מתהווה. זרע חדש של שגשוג.",
+    rev:"הזדמנות שהוחמצה, חוסר יציבות, תכנון לקוי. משהו בבסיס הכלכלי רעוע." },
+  { id:401, arc:"pentacles", he:"שניים במטבעות", en:"Two of Pentacles", icon:"🤹",
+    up:"איזון, ג'אגלינג בין מטלות, גמישות. אתה מנהל כמה דברים בו-זמנית.",
+    rev:"עומס יתר, חוסר איזון, כאוס. יותר מדי כדורים באוויר." },
+  { id:402, arc:"pentacles", he:"שלושה במטבעות", en:"Three of Pentacles", icon:"🧱",
+    up:"עבודת צוות, מיומנות, בנייה משותפת. הישג שנבנה יחד עם אחרים.",
+    rev:"חוסר תיאום, עבודה לא מוערכת, איכות ירודה. שיתוף הפעולה נתקע." },
+  { id:403, arc:"pentacles", he:"ארבעה במטבעות", en:"Four of Pentacles", icon:"🔒",
+    up:"ביטחון, שמרנות, אחיזה במה שיש. יציבות — אך אולי אחיזה חזקה מדי.",
+    rev:"שחרור, נדיבות, הרפיה מהצורך לשלוט. או דווקא בזבזנות. הזמן לאזן." },
+  { id:404, arc:"pentacles", he:"חמישה במטבעות", en:"Five of Pentacles", icon:"🥶",
+    up:"מחסור, קושי כלכלי, תחושת בדידות. תקופה קשה — אך יש עזרה בקרבת מקום.",
+    rev:"התאוששות, סוף מצוקה, קבלת עזרה. המצב מתחיל להשתפר." },
+  { id:405, arc:"pentacles", he:"שישה במטבעות", en:"Six of Pentacles", icon:"🤝",
+    up:"נדיבות, נתינה וקבלה, איזון. זרימה הוגנת של עזרה — בשני הכיוונים.",
+    rev:"נתינה לא מאוזנת, חוב, תלות. משהו ביחסי הנתינה לא הוגן." },
+  { id:406, arc:"pentacles", he:"שבעה במטבעות", en:"Seven of Pentacles", icon:"🌱",
+    up:"סבלנות, השקעה לטווח ארוך, הערכת התקדמות. הזרעים גדלים — תן להם זמן.",
+    rev:"חוסר סבלנות, השקעה שלא נושאת פרי, ספק. תוהה אם המאמץ שווה." },
+  { id:407, arc:"pentacles", he:"שמונה במטבעות", en:"Eight of Pentacles", icon:"🛠️",
+    up:"מיומנות, שקדנות, שיפור מתמיד. עבודה מסורה שמובילה למומחיות.",
+    rev:"חוסר מיקוד, עבודה חסרת השראה, שלמותנות. משהו בעשייה איבד משמעות." },
+  { id:408, arc:"pentacles", he:"תשעה במטבעות", en:"Nine of Pentacles", icon:"🍇",
+    up:"עצמאות, שפע, פרי העמל. נהנה מפירות ההשקעה שלך — בכוחות עצמך.",
+    rev:"תלות כלכלית, שפע חלול, מחיר ההצלחה. ההישג לא מספק כפי שקיווית." },
+  { id:409, arc:"pentacles", he:"עשרה במטבעות", en:"Ten of Pentacles", icon:"🏰",
+    up:"שפע מתמשך, מורשת, ביטחון משפחתי. יציבות שנבנתה לאורך זמן.",
+    rev:"חוסר יציבות משפחתית, מחלוקת על משאבים, מחשבה קצרת-טווח. משהו במורשת מעורער." },
+  { id:410, arc:"pentacles", he:"נסיך המטבעות", en:"Page of Pentacles", icon:"📗",
+    up:"למידה, תכנון, הזדמנות מעשית. סקרנות שמובילה לצמיחה חומרית.",
+    rev:"דחיינות, חוסר מעש, חלומות בלי תוכנית. הרעיון לא יוצא לפועל." },
+  { id:411, arc:"pentacles", he:"אביר המטבעות", en:"Knight of Pentacles", icon:"🐢",
+    up:"אחריות, עקביות, עבודה מתמדת. התקדמות איטית אך בטוחה.",
+    rev:"קיפאון, שגרה משעממת, פרפקציוניזם. יותר מדי זהירות שמעכבת." },
+  { id:412, arc:"pentacles", he:"מלכת המטבעות", en:"Queen of Pentacles", icon:"🌾",
+    up:"טיפוח, שפע מעשי, איזון בית-עבודה. דואגת לעצמה ולסובבים בחוכמה.",
+    rev:"הזנחה עצמית, עומס, חוסר איזון. נותנת לכולם חוץ מלעצמה." },
+  { id:413, arc:"pentacles", he:"מלך המטבעות", en:"King of Pentacles", icon:"💰",
+    up:"שפע, יציבות, הצלחה מבוססת. שליטה חומרית שנבנתה בחוכמה ובנדיבות.",
+    rev:"חמדנות, חומרנות, נוקשות כלכלית. השפע הפך למטרה בפני עצמה." },
+];
+
+// ===== MAAGAR HALOMOT (Dream Symbol Database) =====
+// Each symbol: key(id), he(title), keys[](Hebrew match words incl. inflections), meaning(he)
+// Original Hebrew phrasings of common folk/symbolic dream interpretations. Entertainment only.
+const DREAM_DB = [
+  // --- בעלי חיים / Animals ---
+  { id:"snake", he:"נחש", keys:["נחש","נחשים","נחשית","צפע","פתן"],
+    meaning:"נחש מסמל טרנספורמציה ופחד גם יחד. לעיתים הוא מייצג אדם או מצב שאתה חש כלפיו חוסר אמון, ולעיתים דווקא ריפוי והתחדשות — הנחש משיל את עורו. שאל את עצמך מה בחייך מבקש להתחדש, וממה אתה נזהר." },
+  { id:"dog", he:"כלב", keys:["כלב","כלבים","כלבה","גור"],
+    meaning:"כלב מסמל נאמנות, חברות והגנה. כלב ידידותי מרמז על יחסים בטוחים ותמיכה בסביבתך; כלב תוקפני עשוי לבטא קונפליקט עם חבר או תחושת בגידה." },
+  { id:"cat", he:"חתול", keys:["חתול","חתולים","חתולה","חתלתול"],
+    meaning:"חתול קשור לעצמאות, נשיות ואינטואיציה. הוא מזמין אותך להקשיב לתחושת הבטן ולתת מקום לחלק העצמאי והמסתורי שבך." },
+  { id:"horse", he:"סוס", keys:["סוס","סוסים","סוסה","סוסון"],
+    meaning:"סוס מסמל חופש, כוח ותשוקה. סוס דוהר מבטא אנרגיה ורצון להתקדם; סוס כבול או פצוע עשוי לרמז על כוח שאתה מרגיש שנחסם." },
+  { id:"bird", he:"ציפור", keys:["ציפור","ציפורים","עוף","יונה","נשר","ציפורי"],
+    meaning:"ציפור מסמלת חופש, שאיפות ומחשבות שמבקשות להמריא. ציפור עפה מרמזת על השתחררות; ציפור כלואה על שאיפה שמחכה למימוש." },
+  { id:"spider", he:"עכביש", keys:["עכביש","עכבישים","קורים","רשת"],
+    meaning:"עכביש מסמל יצירתיות, סבלנות ותחושה של להיות 'לכוד ברשת'. הוא עשוי לבטא מצב מורכב שאתה טווה — או כזה שאתה מרגיש נלכד בו." },
+  { id:"fish", he:"דג", keys:["דג","דגים","דגה"],
+    meaning:"דג קשור לתת-מודע, לרגשות ולשפע. דגים רבים מסמלים לעיתים בשורה טובה או פוריות רעיונית; דג בודד — מחשבה שצפה מהעומק." },
+  { id:"lion", he:"אריה", keys:["אריה","אריות","לביא"],
+    meaning:"אריה מסמל כוח, אומץ וגאווה. הוא מזכיר לך את הכוח הפנימי שלך — ולעיתים מזמין לרסן אותו בעדינות במקום להשתמש בו בכוח." },
+  { id:"insect", he:"חרקים", keys:["חרק","חרקים","ג'וק","תיקן","זבוב","זבובים","נמלה","נמלים"],
+    meaning:"חרקים מבטאים לרוב דאגות קטנות שמצטברות — 'משהו שמזמזם לך באוזן'. שאל אילו מטרדים קטנים מבקשים ממך תשומת לב." },
+
+  // --- מים וטבע / Water & nature ---
+  { id:"water", he:"מים", keys:["מים","נהר","נחל","זרם"],
+    meaning:"מים הם מראה לרגשות. מים צלולים ורגועים מבטאים שלווה רגשית; מים עכורים או סוערים — רגשות מבולבלים או סערה פנימית." },
+  { id:"sea", he:"ים", keys:["ים","אוקיינוס","גלים"],
+    meaning:"הים מסמל את התת-מודע העמוק ואת הרגשות הגדולים. ים רגוע — שלווה; ים סוער — התמודדות עם רגשות עוצמתיים שקשה לשלוט בהם." },
+  { id:"flood", he:"שיטפון", keys:["שיטפון","הצפה","טובע","טביעה","מוצף","טבעתי","טבע","טובעת"],
+    meaning:"הצפה או טביעה מבטאות תחושת הצפה רגשית — משהו בחיים מרגיש 'יותר מדי'. החלום מזמין למצוא נקודת אחיזה ולנשום." },
+  { id:"rain", he:"גשם", keys:["גשם","גשמים","סופה","ברק","רעם"],
+    meaning:"גשם מסמל טיהור, שחרור ולעיתים עצב שמתנקז. אחרי הגשם בא הניקיון — רגש שמשתחרר ומפנה מקום." },
+  { id:"fire", he:"אש", keys:["אש","שריפה","להבה","להבות","בוער"],
+    meaning:"אש מסמלת תשוקה, כעס וטרנספורמציה. אש מבוקרת — אנרגיה יצירתית; שריפה משתוללת — רגש עז שמאיים לצאת משליטה." },
+  { id:"tree", he:"עץ", keys:["עץ","עצים","יער","שורשים"],
+    meaning:"עץ מסמל צמיחה, שורשים ויציבות. עץ חזק מבטא ביסוס ואיתנות; עץ נובל או כרות — תחושה שמשהו בבסיס שלך זקוק לטיפול." },
+  { id:"mountain", he:"הר", keys:["הר","הרים","פסגה","מצוק"],
+    meaning:"הר מסמל אתגר, שאיפה ומטרה. טיפוס במעלה ההר — התמודדות עם משימה גדולה; עמידה בפסגה — הישג ותחושת הצלחה." },
+  { id:"moon", he:"ירח", keys:["ירח","לבנה"],
+    meaning:"הירח מסמל אינטואיציה, מחזוריות ורגשות נסתרים. הוא מזמין אותך להקשיב לצד הפנימי והחלומי שלך." },
+  { id:"sun", he:"שמש", keys:["שמש","זריחה","אור יום"],
+    meaning:"השמש מסמלת בהירות, אנרגיה ושמחה. היא מבשרת אופטימיות, חיוניות ותקופה של אור." },
+
+  // --- תנועה ומצבים / Actions & states ---
+  { id:"falling", he:"נפילה", keys:["נופל","נפילה","נפלתי","ליפול","צונח"],
+    meaning:"נפילה בחלום מבטאת לרוב תחושת אובדן שליטה או חוסר ביטחון במצב מסוים. שאל היכן בחייך אתה מרגיש שהקרקע פחות יציבה — ומה יכול לחזק אותה." },
+  { id:"flying", he:"מעופף", keys:["עף","מעופף","טס","עפתי","לעוף","ריחוף"],
+    meaning:"תעופה מבטאת חופש, שחרור ותחושת שליטה. זו הרגשה של להתרומם מעל קשיים ולראות את התמונה מלמעלה — סימן לביטחון ולשאיפה." },
+  { id:"chase", he:"מרדף", keys:["רודף","נרדף","בורח","מרדף","רודפים","להימלט"],
+    meaning:"מרדף מבטא הימנעות — משהו שאתה בורח ממנו במקום להתמודד איתו. שאל את עצמך מהו ה'רודף' באמת: פחד, אחריות, או רגש שקשה להביט בו." },
+  { id:"stuck", he:"שיתוק", keys:["תקוע","משותק","לא זז","לא יכול לזוז","כבד"],
+    meaning:"תחושת שיתוק או חוסר יכולת לזוז מבטאת חוסר אונים במצב ער — משהו שאתה מרגיש בו לכוד. החלום מזמין לזהות מה מחזיק אותך ומה הצעד הקטן שכן אפשרי." },
+  { id:"late", he:"איחור", keys:["מאחר","איחור","פספסתי","אוטובוס","רכבת","טיסה"],
+    meaning:"איחור, החמצת אוטובוס או רכבת מבטאים חשש מהחמצת הזדמנות או לחץ של זמן. שאל אם יש בחייך משהו שאתה חושש ש'הרכבת שלו יוצאת'." },
+  { id:"exam", he:"מבחן", keys:["מבחן","בחינה","נבחן","לא מוכן","מבחנים"],
+    meaning:"חלום על מבחן שלא התכוננת אליו מבטא חרדת הערכה — פחד שלא תעמוד בציפיות. הוא נפוץ מאוד ולרוב מלמד שאתה לוקח את עצמך ברצינות, לא שאתה נכשל." },
+  { id:"naked", he:"עירום", keys:["עירום","ערום","בלי בגדים","עירומה"],
+    meaning:"עירום בפומבי מבטא פגיעות, חשש להיחשף או פחד משיפוט. החלום מזמין לשאול היכן אתה מרגיש 'חשוף' ומה יעזור לך להרגיש בטוח יותר." },
+  { id:"teeth", he:"נשירת שיניים", keys:["שיניים","שן","נשרו","נופלות שיניים","נשירת"],
+    meaning:"נשירת שיניים היא מהחלומות הנפוצים — קשורה לרוב לחרדה, לתחושת חוסר שליטה או לדאגה מהמראה ומההזדקנות. לעיתים היא מבטאת מילים שנאמרו או נבלעו." },
+  { id:"lost", he:"אבוד/ה", keys:["אבוד","הלכתי לאיבוד","לא מוצא","מבוך","דרך"],
+    meaning:"ללכת לאיבוד מבטא חוסר כיוון או תחושה שאיבדת את הדרך במצב מסוים. החלום מזמין לעצור, להתמצא מחדש ולשאול לאן אתה באמת רוצה להגיע." },
+
+  // --- אנשים ויחסים / People & relationships ---
+  { id:"death", he:"מוות", keys:["מוות","מת","מתה","גסיסה","הלוויה","קבר"],
+    meaning:"מוות בחלום כמעט אף פעם אינו נבואי — הוא מסמל סוף והתחלה. משהו בחייך מסתיים כדי לפנות מקום לחדש: פרק, הרגל, זהות ישנה." },
+  { id:"baby", he:"תינוק", keys:["תינוק","תינוקת","לידה","היריון","עובר"],
+    meaning:"תינוק או לידה מסמלים התחלה חדשה — פרויקט, רעיון, שלב בחיים. משהו רך וחדש נולד ומבקש טיפוח והגנה." },
+  { id:"ex", he:"אקס / אהוב מהעבר", keys:["אקס","אהוב","אהובה לשעבר","בן זוג לשעבר","גרוש"],
+    meaning:"חלום על אדם מהעבר לרוב אינו עליו אלא על מה שהוא מסמל — תחושה, תקופה או חלק בעצמך שהתעורר שוב. שאל אילו רגשות הוא מציף, לא רק את מי." },
+  { id:"family", he:"בני משפחה", keys:["אמא","אבא","הורים","אח","אחות","משפחה","סבתא","סבא"],
+    meaning:"בני משפחה בחלום מייצגים לעיתים תכונות שלהם שחיות גם בך, או את היחסים והדינמיקה שאתה נושא מהבית. שאל איזה חלק ממך הם מייצגים." },
+  { id:"stranger", he:"אדם זר", keys:["זר","זרה","אדם לא מוכר","דמות"],
+    meaning:"דמות זרה בחלום מייצגת לרוב חלק לא-מוכר בך עצמך. שים לב מה היא עושה ומרגישה — היא עשויה לשקף צד שאתה עדיין מגלה." },
+
+  // --- מקומות ואובייקטים / Places & objects ---
+  { id:"house", he:"בית", keys:["בית","דירה","חדר","חדרים","בית ילדות"],
+    meaning:"בית מסמל את העצמי. חדרים שונים מייצגים חלקים בנפשך: מרתף — תת-מודע וזיכרונות; עליית גג — שאיפות; חדר חדש שהתגלה — פוטנציאל שלא ידעת עליו." },
+  { id:"road", he:"דרך", keys:["כביש","דרך","שביל","מסלול","נסיעה"],
+    meaning:"דרך או כביש מסמלים את מסלול חייך. כביש ישר — כיוון ברור; דרך מפותלת או חסומה — לבטים לגבי הכיוון שבחרת." },
+  { id:"door", he:"דלת", keys:["דלת","שער","פתח","מפתח"],
+    meaning:"דלת מסמלת הזדמנות ומעבר. דלת פתוחה — הזדמנות שנפתחת; דלת נעולה — חסם, או צורך למצוא את 'המפתח' הנכון." },
+  { id:"money", he:"כסף", keys:["כסף","מטבע","עושר","ארנק","זהב"],
+    meaning:"כסף בחלום קשור לערך עצמי, ביטחון וכוח — לא רק לכלכלה. מציאת כסף מרמזת על גילוי ערך פנימי; אובדנו על חשש לגבי ביטחון." },
+  { id:"phone", he:"טלפון", keys:["טלפון","נייד","שיחה","הודעה","סמארטפון"],
+    meaning:"טלפון מסמל תקשורת וחיבור. שיחה שלא מצליחה להתחבר מבטאת קושי להעביר מסר או תחושת ניתוק ממישהו שחשוב לך." },
+  { id:"vehicle", he:"רכב", keys:["מכונית","אוטו","רכב","נהיגה","נוהג","בלמים"],
+    meaning:"רכב מסמל את השליטה בכיוון חייך. אתה הנהג — או שמישהו אחר נוהג? בלמים שלא עובדים מבטאים תחושת חוסר שליטה על הקצב או הכיוון." },
+  { id:"stairs", he:"מדרגות", keys:["מדרגות","סולם","עולה","יורד","מעלית"],
+    meaning:"מדרגות מסמלות התקדמות או נסיגה — עלייה לשלב חדש או ירידה אל העומק. הכיוון (למעלה/למטה) רומז על התנועה בחייך כעת." },
+  { id:"mirror", he:"מראה", keys:["מראה","השתקפות","בבואה"],
+    meaning:"מראה מזמינה להסתכל על עצמך — על הדימוי העצמי ועל האמת הפנימית. מה שאתה רואה בה מרמז על איך אתה תופס את עצמך כעת." },
+  { id:"clothes", he:"בגדים", keys:["בגדים","בגד","לובש","מדים","נעליים"],
+    meaning:"בגדים מסמלים את הדימוי שאתה מציג לעולם — התפקידים שאתה 'לובש'. בגד לא מתאים מבטא תחושה שאינך במקומך; בגד חדש — זהות מתחדשת." },
+  { id:"food", he:"אוכל", keys:["אוכל","מזון","ארוחה","רעב","אכילה"],
+    meaning:"אוכל מסמל הזנה — גופנית, רגשית או רוחנית. רעב מבטא צורך שלא בא על סיפוקו; שפע אוכל — תחושת מלאות וטיפוח." },
+
+  // --- מצבים מופשטים / Abstract ---
+  { id:"darkness", he:"חושך", keys:["חושך","חשוך","אפלה","לילה"],
+    meaning:"חושך מסמל את הלא-נודע, את הפחד או את מה שעדיין לא הואר. הוא אינו בהכרח שלילי — לעיתים הוא הזמנה להאיר פינה שלא הבטת בה." },
+  { id:"light", he:"אור", keys:["אור","זוהר","נר","מנורה"],
+    meaning:"אור מסמל תובנה, תקווה והדרכה. אור שמופיע בחלום מרמז על בהירות שמגיעה, על פתרון שמאיר או על אמת שנחשפת." },
+  { id:"blood", he:"דם", keys:["דם","דימום","פצע","פציעה"],
+    meaning:"דם מסמל חיוניות, אנרגיית חיים ולעיתים כאב או קורבן. דם עשוי לבטא משהו שאתה 'מדמם' עליו רגשית — או דווקא כוח חיים עז." },
+  { id:"pregnancy", he:"היריון", keys:["בהיריון","הרה","בטן","עוברית"],
+    meaning:"היריון מסמל יצירה בהתהוות — רעיון, פרויקט או שלב חדש שגדל בתוכך וטרם נולד. הוא מזמין סבלנות לתהליך שמבשיל." },
+  { id:"wedding", he:"חתונה", keys:["חתונה","נישואין","כלה","חתן"],
+    meaning:"חתונה מסמלת איחוד ומחויבות — לא בהכרח רומנטית. לעיתים היא מבטאת חיבור בין שני חלקים בך עצמך, או התחייבות לדרך חדשה." },
+  { id:"war", he:"מלחמה", keys:["מלחמה","קרב","חייל","נשק","הפצצה"],
+    meaning:"מלחמה או קרב מבטאים קונפליקט פנימי או חיצוני — מאבק בין רצונות, ערכים או אנשים. שאל מי נגד מי בקרב, וזה ירמז על המתח האמיתי." },
+  { id:"flowers", he:"פרחים", keys:["פרח","פרחים","גינה","פריחה"],
+    meaning:"פרחים מסמלים צמיחה, יופי ואהבה. פריחה מבטאת תקופה של פתיחות ושגשוג רגשי; פרח נובל — משהו יפה שדורש טיפוח מחודש." },
+];
+
+/* ============ FORTUNES (daily cookie) — Hebrew ============ */
+const FORTUNES=[
+ "מה שאתה מחפש מחפש גם אותך.",
+ "צעד קטן היום שווה יותר מקפיצה שלא קרתה.",
+ "האדם הנכון יראה בך את מה שאתה עוד לא רואה בעצמך.",
+ "לפעמים הדרך הארוכה היא הקיצור האמיתי.",
+ "אל תבלבל בין שקט לריקנות — לפעמים הוא דווקא מלא.",
+ "מה שנראה כמו סוף הוא רק פנייה בכביש.",
+ "הכוח שאתה מחפש בחוץ כבר גר בתוכך.",
+ "היום מישהו יזדקק בדיוק לחיוך שלך.",
+ "אל תמדוד את עצמך במחר של אתמול.",
+ "לב פתוח שומע דברים שהאוזן מפספסת.",
+ "ההזדמנות הבאה תגיע מחופשת כמו עבודה.",
+ "אתה לא צריך לראות את כל המדרגות כדי לעלות את הראשונה.",
+ "מה שאתה נותן בשקט חוזר אליך ברעש.",
+ "הפחד הגדול ביותר בדרך כלל שומר על החלום הגדול ביותר.",
+ "היום כדאי לומר 'כן' לדבר קטן אחד שמפחיד אותך.",
+ "לא כל מי שהלך אבד — לפעמים הוא פשוט מצא כיוון אחר.",
+ "השאלה הנכונה שווה יותר מעשר תשובות.",
+ "תן לעצמך את החמלה שאתה נותן לאחרים.",
+ "המזל אוהב את מי שכבר בתנועה.",
+ "מה ששתלת בסבלנות יפרח בזמן שלו, לא בזמן שלך.",
+ "היום טוב לסלוח — במיוחד לעצמך.",
+ "לפעמים לנוח זו הצורה האמיצה ביותר של התקדמות.",
+ "הדלת שנסגרה עשתה לך טובה שעוד לא הבנת.",
+ "אתה חזק יותר ממה שהסיפור הישן מספר עליך.",
+ "החיים לוחשים לפני שהם צועקים — הקשב הפעם.",
+ "ההצלחה שלך לא גוזלת מאף אחד. יש מספיק אור לכולם.",
+ "היום מתאים להתחיל, לא לחכות שיהיה מושלם.",
+ "מה שאתה מתרגל בשקט הופך למי שאתה בקול.",
+ "לפעמים התשובה היא פשוט: עוד יום אחד של אמונה.",
+ "האדם שאתה נהיה חשוב יותר מהיעד שאתה מגיע אליו.",
+];
+
+/* ============ SPREADS ============ */
+const SPREADS={
+  one:  {he:"קלף בודד", en:"Single Card", n:1, pos_he:["המסר"], pos_en:["The Message"]},
+  three:{he:"שלושה קלפים", en:"Three Cards", n:3, pos_he:["עבר","הווה","עתיד"], pos_en:["Past","Present","Future"]},
+  cross:{he:"צלב קלטי (5)", en:"Celtic (5)", n:5, pos_he:["המצב","האתגר","הבסיס","העבר הקרוב","התוצאה"], pos_en:["Situation","Challenge","Foundation","Recent Past","Outcome"]},
+};
+
+/* ============ LANGUAGES (UI chrome) ============ */
+const LANG={
+ he:{
+  brand:"מיסטיק", heroSub:"קלפי טארוט · פירוש חלומות · עוגיית מזל",
+  tTarot:"טארוט", tTarotD:"שאל שאלה ושלוף קלפים",
+  tDream:"פירוש חלומות", tDreamD:"ספר על חלום וגלה את משמעותו",
+  tFortune:"עוגיית מזל יומית", tFortuneD:"מסר אחד ליום",
+  homeDisc:"✨ לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ מקצועי.",
+  back:"חזרה",
+  tarotH:"🔮 קריאת טארוט", tarotSub:"חשוב על שאלה, בחר פריסה, ושלוף את הקלפים.",
+  lblQ:"השאלה שלך (אופציונלי)", qPlace:"למשל: מה כדאי לי לדעת השבוע?",
+  lblSpread:"בחר פריסה", drawTxt:"שלוף קלפים", redraw:"שלוף מחדש",
+  tapReveal:"הקש על קלף כדי לחשוף",
+  deepen:"✨ העמק עם הבינה", deepening:"קורא את הפריסה...",
+  dreamH:"🌙 פירוש חלומות", dreamSub:"תאר את החלום במילים שלך — ככל שתפרט יותר, כך הפירוש יהיה עשיר יותר.",
+  lblDream:"מה חלמת?", dreamPlace:"למשל: חלמתי שאני עף מעל הים ופתאום נפלתי...",
+  dreamTxt:"פרש את החלום", dreamAgain:"פרש חלום אחר",
+  dreamSymbols:"סמלים שזוהו בחלום", dreamNone:"לא זיהיתי סמל מוכר בחלום — נסה לתאר בפירוט רב יותר, או הפעל את הבינה לפירוש חופשי.",
+  dreamDeepen:"✨ פירוש אישי עם הבינה",
+  fortuneH:"🥠 עוגיית המזל היומית", fortuneSub:"מסר אחד ליום. חזור מחר למסר חדש.",
+  tapCookie:"הקש על העוגייה", luckyNums:"מספרי המזל שלך",
+  comeTomorrow:"חזרת! העוגייה של היום כבר נפתחה. מסר חדש יחכה לך מחר. 🌙",
+  setH:"⚙️ הגדרות", ghGeneral:"כללי", ghPal:"ערכת צבע", ghAI:"בינה מלאכותית (Pro)", ghData:"נתונים",
+  rName:"שם משתמש", rLang:"שפה", rTheme:"מצב יום / לילה", night:"לילה", day:"יום",
+  rAI:"חיבור בינה", aiOn:"מחובר", aiOff:"לא מחובר",
+  aiHint:"האפליקציה עובדת במלואה בלי בינה. חיבור מפתח אישי מוסיף פירושים אישיים ומעמיקים.",
+  rBackup:"גיבוי (ייצוא)", rBackupD:"שמור את ההיסטוריה שלך",
+  rRestore:"שחזור (ייבוא)", rRestoreD:"טען מקובץ גיבוי",
+  rClear:"מחק הכל", rClearD:"איפוס מלא",
+  abVer:"גרסה", abDev:"פותח", abPlat:"פלטפורמה", abStore:"אחסון", abStoreV:"על המכשיר בלבד", abLic:"רישיון",
+  abStoreLink:"חנות AppNest", abShare:"שתף את האפליקציה", abFeedback:"שלח משוב", abPrivacy:"מדיניות פרטיות", abGuide:"מדריך שימוש",
+  aboutDisc:"MysticNest נועד לבידור, להרהור ולהשראה בלבד. קריאות הטארוט, פירושי החלומות ועוגיות המזל אינם ניבוי עתיד, אבחון או ייעוץ מקצועי (רפואי, נפשי, משפטי או כלכלי). הסתמך על שיקול דעתך, ובעת הצורך פנה לאיש מקצוע.",
+  namePrompt:"הכנס שם / כינוי:",
+  saved:"נשמר ✓", copied:"הועתק ✓", exported:"גובה בהצלחה ✓",
+  confirmClear:"למחוק את כל הנתונים? פעולה זו בלתי הפיכה.",
+  cleared:"נמחק הכל", importOk:"שוחזר בהצלחה ✓", importErr:"קובץ לא תקין",
+  aiTitle:"🤖 חיבור בינה מלאכותית",
+  aiIntro:"בחר ספק, הכנס מפתח אישי (נשמר על המכשיר בלבד), ותהנה מפירושים אישיים ומעמיקים. המפתח נשלח ישירות לספק — לא עובר דרך שום שרת של AppNest.",
+  aiKey:"מפתח API", aiKeyPlace:"הדבק את המפתח כאן",
+  aiModel:"מודל", aiRefresh:"🔄 רענן רשימת מודלים", aiTest:"בדוק חיבור", aiSave:"שמור וחבר", aiDisconnect:"נתק",
+  aiTesting:"בודק...", aiOk:"החיבור תקין ✓", aiFail:"החיבור נכשל: ",
+  aiNoKey:"הכנס מפתח קודם", aiConnected:"הבינה חוברה בהצלחה ✓", aiDisc:"הבינה נותקה",
+  aiPrivacy:"⚠️ הפעלת הבינה שולחת את הטקסט (השאלה/החלום) לספק שבחרת.",
+  guideTitle:"📖 מדריך שימוש",
+  guideBody:"🔮 טארוט — כתוב שאלה (או השאר ריק), בחר פריסה, והקש 'שלוף קלפים'. הקש על כל קלף כדי לחשוף אותו ולקרוא את משמעותו (ישר או הפוך).\n\n🌙 חלומות — תאר את החלום במילים שלך. האפליקציה תזהה סמלים מוכרים ותציג את משמעותם. ככל שתפרט יותר, הפירוש יהיה עשיר יותר.\n\n🥠 עוגיית מזל — מסר אחד חדש בכל יום. חזור מחר למסר הבא.\n\n✨ בינה (אופציונלי) — אם תחבר מפתח אישי בהגדרות, יופיע כפתור 'העמק עם הבינה' שנותן פירוש אישי המותאם בדיוק לשאלה או לחלום שלך.\n\nהכול נשמר על המכשיר שלך בלבד.",
+  histTitle:"קריאות אחרונות", clearHist:"נקה היסטוריה",
+  backupNudge:"לא גיבית מזמן. כדאי לשמור עותק של ההיסטוריה שלך.", backupNow:"גבה עכשיו", dismiss:"אחר כך",
+ },
+ en:{
+  brand:"Mystic", heroSub:"Tarot · Dream reading · Fortune cookie",
+  tTarot:"Tarot", tTarotD:"Ask a question, draw the cards",
+  tDream:"Dream reading", tDreamD:"Describe a dream, find its meaning",
+  tFortune:"Daily fortune cookie", tFortuneD:"One message a day",
+  homeDisc:"✨ For entertainment and reflection only — not fortune-telling or professional advice.",
+  back:"Back",
+  tarotH:"🔮 Tarot Reading", tarotSub:"Think of a question, pick a spread, and draw.",
+  lblQ:"Your question (optional)", qPlace:"e.g. What should I know this week?",
+  lblSpread:"Choose a spread", drawTxt:"Draw cards", redraw:"Draw again",
+  tapReveal:"Tap a card to reveal",
+  deepen:"✨ Deepen with AI", deepening:"Reading the spread...",
+  dreamH:"🌙 Dream Reading", dreamSub:"Describe the dream in your own words — the more detail, the richer the reading.",
+  lblDream:"What did you dream?", dreamPlace:"e.g. I was flying over the sea and suddenly fell...",
+  dreamTxt:"Interpret the dream", dreamAgain:"Interpret another",
+  dreamSymbols:"Symbols found in your dream", dreamNone:"No familiar symbol recognized — try describing in more detail, or use AI for a free-form reading.",
+  dreamDeepen:"✨ Personal reading with AI",
+  fortuneH:"🥠 Daily Fortune Cookie", fortuneSub:"One message a day. Come back tomorrow.",
+  tapCookie:"Tap the cookie", luckyNums:"Your lucky numbers",
+  comeTomorrow:"Welcome back! Today's cookie is already open. A new message awaits tomorrow. 🌙",
+  setH:"⚙️ Settings", ghGeneral:"General", ghPal:"Color theme", ghAI:"AI (Pro)", ghData:"Data",
+  rName:"Username", rLang:"Language", rTheme:"Day / Night", night:"Night", day:"Day",
+  rAI:"AI connection", aiOn:"Connected", aiOff:"Not connected",
+  aiHint:"The app works fully without AI. Connecting your own key adds personal, deeper readings.",
+  rBackup:"Backup (export)", rBackupD:"Save your history",
+  rRestore:"Restore (import)", rRestoreD:"Load from a backup file",
+  rClear:"Delete all", rClearD:"Full reset",
+  abVer:"Version", abDev:"Developer", abPlat:"Platform", abStore:"Storage", abStoreV:"On device only", abLic:"License",
+  abStoreLink:"AppNest store", abShare:"Share the app", abFeedback:"Send feedback", abPrivacy:"Privacy policy", abGuide:"User guide",
+  aboutDisc:"MysticNest is for entertainment, reflection and inspiration only. The tarot readings, dream interpretations and fortune cookies are not fortune-telling, diagnosis or professional advice (medical, mental, legal or financial). Rely on your own judgment, and consult a professional when needed.",
+  namePrompt:"Enter name / nickname:",
+  saved:"Saved ✓", copied:"Copied ✓", exported:"Backed up ✓",
+  confirmClear:"Delete all data? This cannot be undone.",
+  cleared:"All cleared", importOk:"Restored ✓", importErr:"Invalid file",
+  aiTitle:"🤖 AI Connection",
+  aiIntro:"Pick a provider, enter your own key (stored on-device only), and enjoy personal, deeper readings. The key goes directly to the provider — never through any AppNest server.",
+  aiKey:"API key", aiKeyPlace:"Paste your key here",
+  aiModel:"Model", aiRefresh:"🔄 Refresh model list", aiTest:"Test connection", aiSave:"Save & connect", aiDisconnect:"Disconnect",
+  aiTesting:"Testing...", aiOk:"Connection OK ✓", aiFail:"Connection failed: ",
+  aiNoKey:"Enter a key first", aiConnected:"AI connected ✓", aiDisc:"AI disconnected",
+  aiPrivacy:"⚠️ Using AI sends your text (question/dream) to the provider you chose.",
+  guideTitle:"📖 User Guide",
+  guideBody:"🔮 Tarot — Write a question (or leave blank), choose a spread, tap 'Draw cards'. Tap each card to reveal it and read its meaning (upright or reversed).\n\n🌙 Dreams — Describe your dream in your own words. The app finds known symbols and shows their meaning. More detail = richer reading.\n\n🥠 Fortune cookie — One new message every day. Come back tomorrow for the next.\n\n✨ AI (optional) — If you connect your own key in Settings, a 'Deepen with AI' button appears, giving a personal reading tailored to your exact question or dream.\n\nEverything is stored on your device only.",
+  histTitle:"Recent readings", clearHist:"Clear history",
+  backupNudge:"You haven't backed up in a while. Consider saving a copy of your history.", backupNow:"Back up now", dismiss:"Later",
+ },
+};
+// ru/es/ar fall back to English for now; core nav still switches direction where needed
+LANG.ru=Object.assign({},LANG.en,{brand:"Мистик",tTarot:"Таро",tDream:"Толкование снов",tFortune:"Печенье с предсказанием",back:"Назад",setH:"⚙️ Настройки",rLang:"Язык"});
+LANG.es=Object.assign({},LANG.en,{brand:"Místico",tTarot:"Tarot",tDream:"Interpretación de sueños",tFortune:"Galleta de la fortuna",back:"Atrás",setH:"⚙️ Ajustes",rLang:"Idioma"});
+LANG.ar=Object.assign({},LANG.en,{brand:"ميستيك",tTarot:"التاروت",tDream:"تفسير الأحلام",tFortune:"كعكة الحظ",back:"رجوع",setH:"⚙️ الإعدادات",rLang:"اللغة"});
+
+const LANG_NAMES={he:"עברית",en:"English",ru:"Русский",es:"Español",ar:"العربية"};
+const RTL_LANGS=['he','ar'];
+function T(k){const L=LANG[state.lang]||LANG.he;return (k in L)?L[k]:(LANG.en[k]??k);}
+
+/* ============ AI CONFIG (BYOK, golden-rule models) ============ */
+const AI_PROVIDERS={
+  claude:{name:"Claude (Anthropic)",icon:"🧠",tag:"api",
+    models:["claude-haiku-4-5-20251001","claude-sonnet-4-6","claude-opus-4-8"],
+    link:"https://console.anthropic.com"},
+  gemini:{name:"Gemini (Google)",icon:"✨",tag:"free",
+    models:["gemini-flash-latest","gemini-2.5-flash","gemini-3-flash"],
+    link:"https://aistudio.google.com/app/apikey"},
+  openai:{name:"ChatGPT (OpenAI)",icon:"💬",tag:"api",
+    models:["gpt-4o-mini","gpt-4o"],
+    link:"https://platform.openai.com"},
+  local:{name:"AI במכשיר (Ollama)",icon:"💻",tag:"local",
+    models:["llama3.1","mistral"],
+    link:"http://localhost:11434"},
+};
+let AI=DB.getJSON('ai',{provider:null,key:'',model:''});
+function cleanKey(k){return (k||'').split(/[\n,]/).map(s=>s.trim()).filter(Boolean)[0]||'';}
+
+/* core AI call — native per provider, with model fallback (golden rule) */
+async function callAI(prompt,sys){
+  if(!AI.provider||!AI.key) throw new Error("no-ai");
+  const key=cleanKey(AI.key);
+  const p=AI.provider;
+  const models = AI.model ? [AI.model,...AI_PROVIDERS[p].models.filter(m=>m!==AI.model)] : AI_PROVIDERS[p].models.slice();
+  let lastErr;
+  for(const model of models){
+    try{ return await callProvider(p,key,model,prompt,sys); }
+    catch(e){
+      lastErr=e;
+      // only try next model on model-not-found style errors; stop on auth
+      if(/401|403|invalid|api key|permission/i.test(e.message)) throw e;
+    }
+  }
+  throw lastErr||new Error("AI failed");
+}
+async function callProvider(p,key,model,prompt,sys){
+  if(p==='claude'){
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model,max_tokens:1024,system:sys,messages:[{role:"user",content:prompt}]})});
+    const d=await r.json();
+    if(!r.ok) throw new Error((d.error&&d.error.message)||("HTTP "+r.status));
+    return d.content.map(b=>b.text||'').join('').trim();
+  }
+  if(p==='gemini'){
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+      {method:"POST",headers:{"content-type":"application/json"},
+       body:JSON.stringify({system_instruction:{parts:[{text:sys}]},contents:[{parts:[{text:prompt}]}]})});
+    const d=await r.json();
+    if(!r.ok) throw new Error((d.error&&d.error.message)||("HTTP "+r.status));
+    return (d.candidates?.[0]?.content?.parts?.map(x=>x.text).join('')||'').trim();
+  }
+  if(p==='openai'||p==='local'){
+    const base = p==='local' ? "http://localhost:11434/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+    const h={"content-type":"application/json"}; if(p==='openai') h["authorization"]="Bearer "+key;
+    const r=await fetch(base,{method:"POST",headers:h,
+      body:JSON.stringify({model,messages:[{role:"system",content:sys},{role:"user",content:prompt}],max_tokens:1024})});
+    const d=await r.json();
+    if(!r.ok) throw new Error((d.error&&d.error.message)||("HTTP "+r.status));
+    return (d.choices?.[0]?.message?.content||'').trim();
+  }
+  throw new Error("unknown provider");
+}
+
+/* ============ NAV ============ */
+function go(s){
+  document.querySelectorAll('.screen').forEach(el=>el.classList.add('hidden'));
+  const el=document.getElementById('s-'+s); if(el)el.classList.remove('hidden');
+  window.scrollTo(0,0);
+  if(s==='fortune')renderFortune();
+  if(s==='settings')renderSettings();
+}
+
+/* ============ RENDER: shell / i18n ============ */
+function applyLang(){
+  const rtl=RTL_LANGS.includes(state.lang);
+  document.documentElement.lang=state.lang;
+  document.documentElement.dir=rtl?'rtl':'ltr';
+  document.body.classList.toggle('ltr',!rtl);
+  const set=(id,txt)=>{const e=document.getElementById(id);if(e)e.textContent=txt;};
+  set('brandName',T('brand'));
+  set('heroTitle',T('brand')); set('heroSub',T('heroSub'));
+  set('tTarot',T('tTarot')); set('tTarotD',T('tTarotD'));
+  set('tDream',T('tDream')); set('tDreamD',T('tDreamD'));
+  set('tFortune',T('tFortune')); set('tFortuneD',T('tFortuneD'));
+  set('homeDisc',T('homeDisc'));
+  set('back1',T('back'));
+  set('tarotH',T('tarotH')); set('tarotSub',T('tarotSub'));
+  set('lblQ',T('lblQ')); const tq=document.getElementById('tarotQ'); if(tq)tq.placeholder=T('qPlace');
+  set('lblSpread',T('lblSpread')); set('drawTxt',T('drawTxt'));
+  set('dreamH',T('dreamH')); set('dreamSub',T('dreamSub'));
+  set('lblDream',T('lblDream')); const dt=document.getElementById('dreamText'); if(dt)dt.placeholder=T('dreamPlace');
+  set('dreamTxt',T('dreamTxt'));
+  set('fortuneH',T('fortuneH')); set('fortuneSub',T('fortuneSub'));
+  set('setH',T('setH')); set('ghGeneral',T('ghGeneral')); set('ghPal',T('ghPal')); set('ghAI',T('ghAI')); set('ghData',T('ghData'));
+  set('rName',T('rName')); set('rLang',T('rLang')); set('rTheme',T('rTheme'));
+  set('rAI',T('rAI')); set('aiHint',T('aiHint'));
+  set('rBackup',T('rBackup')); set('rBackupD',T('rBackupD'));
+  set('rRestore',T('rRestore')); set('rRestoreD',T('rRestoreD'));
+  set('rClear',T('rClear')); set('rClearD',T('rClearD'));
+  set('abVer',T('abVer')); set('abDev',T('abDev')); set('abPlat',T('abPlat')); set('abStore',T('abStore')); set('abStoreV',T('abStoreV')); set('abLic',T('abLic'));
+  set('abStoreLink',T('abStoreLink')); set('abShare',T('abShare')); set('abFeedback',T('abFeedback')); set('abPrivacy',T('abPrivacy')); set('abGuide',T('abGuide'));
+  set('aboutDisc',T('aboutDisc'));
+  document.querySelectorAll('.backbtn span').forEach(s=>s.textContent=T('back'));
+  renderSpreadChips();
+}
+function applyTheme(){
+  document.body.setAttribute('data-pal',state.pal);
+  if(state.light)document.body.setAttribute('data-light','1'); else document.body.removeAttribute('data-light');
+  document.querySelector('meta[name=theme-color]').setAttribute('content',state.light?'#f4f1e9':'#0d0d10');
+}
+
+/* ============ TAROT ============ */
+function renderSpreadChips(){
+  const c=document.getElementById('spreadChips'); if(!c)return; c.innerHTML='';
+  Object.keys(SPREADS).forEach(k=>{
+    const s=SPREADS[k];
+    const b=document.createElement('button');
+    b.className='chip'+(state.spread===k?' sel':'');
+    b.textContent=state.lang==='he'?s.he:s.en;
+    b.onclick=()=>{state.spread=k;renderSpreadChips();};
+    c.appendChild(b);
+  });
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let currentDraw=null;
+function drawTarot(){
+  const sp=SPREADS[state.spread];
+  const deck=shuffle([...TAROT_MAJOR,...TAROT_MINOR]);
+  const picks=deck.slice(0,sp.n).map(card=>({card,rev:Math.random()<0.35}));
+  currentDraw={q:document.getElementById('tarotQ').value.trim(),spread:state.spread,picks};
+  const posArr=state.lang==='he'?sp.pos_he:sp.pos_en;
+  const res=document.getElementById('tarotResult');
+  let html=`<p class="ssub" style="text-align:center;margin-top:16px">👆 ${T('tapReveal')}</p><div class="spread">`;
+  picks.forEach((p,i)=>{
+    html+=`<div class="tcard" id="tc${i}" onclick="flipCard(${i})">
+      <div class="inner"><div class="face back"><div class="sym">✦</div><div class="pos">${posArr[i]}</div></div>
+      <div class="face front ${p.rev?'rev':''}">
+        <div class="em ${p.rev?'rev-em':''}">${p.card.icon}</div>
+        <div class="nm">${p.card.he}</div><div class="en">${p.card.en}</div>
+        <div class="tag ${p.rev?'r':''}">${p.rev?(state.lang==='he'?'הפוך':'Reversed'):(state.lang==='he'?'ישר':'Upright')}</div>
+      </div></div></div>`;
+  });
+  html+=`</div><div id="tarotReading"></div>`;
+  res.innerHTML=html;
+  document.getElementById('drawTxt').textContent=T('redraw');
+  saveHistory('tarot',(currentDraw.q||sp[state.lang==='he'?'he':'en']),picks.map(p=>p.card.he).join(' · '));
+}
+function flipCard(i){
+  const el=document.getElementById('tc'+i);
+  if(el.classList.contains('flip'))return;
+  el.classList.add('flip');
+  // when all flipped, show reading
+  const all=[...document.querySelectorAll('.tcard')];
+  if(all.every(c=>c.classList.contains('flip'))) setTimeout(showReading,650);
+}
+function showReading(){
+  if(document.getElementById('tarotReading').innerHTML)return;
+  const sp=SPREADS[currentDraw.spread];
+  const posArr=state.lang==='he'?sp.pos_he:sp.pos_en;
+  let html=`<div class="reading">`;
+  currentDraw.picks.forEach((p,i)=>{
+    const meaning=p.rev?p.card.rev:p.card.up;
+    html+=`<div class="rc"><div class="h">${p.card.icon} ${p.card.he} <span class="p">${posArr[i]} · ${p.rev?(state.lang==='he'?'הפוך':'Rev'):(state.lang==='he'?'ישר':'Up')}</span></div><div class="m">${meaning}</div></div>`;
+  });
+  html+=`</div>`;
+  if(AI.provider&&AI.key){
+    html+=`<button class="btn ghost" id="deepBtn" onclick="deepenTarot()">${T('deepen')}</button><div id="aiTarot"></div>`;
+  }
+  document.getElementById('tarotReading').innerHTML=html;
+}
+async function deepenTarot(){
+  const box=document.getElementById('aiTarot');
+  const btn=document.getElementById('deepBtn'); btn.disabled=true;
+  box.innerHTML=`<div class="ai-box"><div class="hd">✨ ${T('deepening')}</div><div class="bd"><span class="spin"></span></div></div>`;
+  const sp=SPREADS[currentDraw.spread];
+  const posArr=state.lang==='he'?sp.pos_he:sp.pos_en;
+  const cardsDesc=currentDraw.picks.map((p,i)=>`${posArr[i]}: ${p.card.he} (${p.rev?'הפוך':'ישר'})`).join('; ');
+  const langName=LANG_NAMES[state.lang];
+  const sys=`אתה קורא/ת טארוט חם/ה, אינטואיטיבי/ת ומעורר/ת השראה. ענה/י בשפה: ${langName}. תן/י קריאה זורמת שקושרת בין הקלפים לשאלה, בטון מסתורי אך מעצים ולא מפחיד. סיים/י במסר מעשי קטן. אורך: 2-3 פסקאות. זכור/י: זו קריאה להשראה והרהור, לא ניבוי ודאי.`;
+  const prompt=`השאלה: ${currentDraw.q||'(ללא שאלה מסוימת — קריאה כללית)'}\nהפריסה (${state.lang==='he'?sp.he:sp.en}): ${cardsDesc}\n\nקרא/י את הפריסה כמכלול.`;
+  try{
+    const ans=await callAI(prompt,sys);
+    box.innerHTML=`<div class="ai-box"><div class="hd">✨ ${state.lang==='he'?'הקריאה שלך':'Your reading'}</div><div class="bd">${esc(ans)}</div></div>`;
+  }catch(e){
+    box.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`;
+    btn.disabled=false;
+  }
+}
+
+/* ============ DREAMS ============ */
+const DREAM_PREFIXES=['ו','ה','ב','ל','מ','ש','כ','וה','שה','כש','ומ','לה','מה','וב','ול','וש'].sort((a,b)=>b.length-a.length);
+function dreamStrip(word){for(const p of DREAM_PREFIXES){if(word.length>p.length+1&&word.startsWith(p))return word.slice(p.length);}return word;}
+function dreamMatch(text,keys){
+  const words=text.split(/[^\u0590-\u05FFa-zA-Z']+/).filter(Boolean);
+  for(const key of keys){
+    for(const w of words){
+      if(w===key)return true;
+      const s=dreamStrip(w);
+      if(s===key)return true;
+      if(key.length>=3&&(w.startsWith(key)||s.startsWith(key)))return true;
+      if(key.length>=5&&w.includes(key))return true;
+    }
+  }
+  return false;
+}
+let currentDream=null;
+function interpretDream(){
+  const txt=document.getElementById('dreamText').value.trim();
+  if(!txt){shake('dreamText');return;}
+  const found=[];
+  DREAM_DB.forEach(sym=>{
+    if(dreamMatch(txt,sym.keys)) found.push(sym);
+  });
+  currentDream={txt,found};
+  const res=document.getElementById('dreamResult');
+  let html='';
+  if(found.length){
+    html+=`<div class="reading" style="margin-top:16px"><div class="rc" style="border:none;padding-bottom:4px"><div class="h">🌙 ${T('dreamSymbols')}</div></div>`;
+    found.forEach(s=>{ html+=`<div class="rc"><div class="h">${symIcon(s.id)} ${s.he}</div><div class="m">${s.meaning}</div></div>`; });
+    html+=`</div>`;
+  }else{
+    html+=`<div class="reading" style="margin-top:16px"><div class="rc" style="border:none"><div class="m">${T('dreamNone')}</div></div></div>`;
+  }
+  if(AI.provider&&AI.key){
+    html+=`<button class="btn ghost" id="deepDreamBtn" onclick="deepenDream()">${T('dreamDeepen')}</button><div id="aiDream"></div>`;
+  }
+  res.innerHTML=html;
+  saveHistory('dream',txt.slice(0,60),found.map(f=>f.he).join(' · ')||'—');
+}
+async function deepenDream(){
+  const box=document.getElementById('aiDream');
+  const btn=document.getElementById('deepDreamBtn'); btn.disabled=true;
+  box.innerHTML=`<div class="ai-box"><div class="hd">✨ ${T('deepening')}</div><div class="bd"><span class="spin"></span></div></div>`;
+  const langName=LANG_NAMES[state.lang];
+  const symbols=currentDream.found.map(f=>f.he).join(', ')||'(לא זוהו סמלים מובנים)';
+  const sys=`את/ה מפרש/ת חלומות חם/ה ומעמיק/ה בגישה סימבולית-פסיכולוגית עדינה. ענה/י בשפה: ${langName}. קרא/י את החלום כמכלול (לא סמל-סמל), חבר/י לרגש ולמצב חיים אפשרי, ושאל/י שאלה פתוחה קטנה שתעזור למשתמש להרהר. טון: חם, סקרן, לא מאבחן ולא מבטיח עתיד. אורך: 2-3 פסקאות.`;
+  const prompt=`החלום: "${currentDream.txt}"\nסמלים שזוהו: ${symbols}\n\nתן/י פירוש אישי וזורם.`;
+  try{
+    const ans=await callAI(prompt,sys);
+    box.innerHTML=`<div class="ai-box"><div class="hd">✨ ${state.lang==='he'?'הפירוש שלך':'Your reading'}</div><div class="bd">${esc(ans)}</div></div>`;
+  }catch(e){
+    box.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`;
+    btn.disabled=false;
+  }
+}
+function symIcon(id){const m={snake:"🐍",dog:"🐕",cat:"🐈",horse:"🐎",bird:"🐦",spider:"🕷️",fish:"🐟",lion:"🦁",insect:"🐜",water:"💧",sea:"🌊",flood:"🌊",rain:"🌧️",fire:"🔥",tree:"🌳",mountain:"⛰️",moon:"🌙",sun:"☀️",falling:"🪂",flying:"🕊️",chase:"🏃",stuck:"🧊",late:"⏰",exam:"📝",naked:"🙈",teeth:"🦷",lost:"🧭",death:"🦋",baby:"👶",ex:"💔",family:"👨‍👩‍👧",stranger:"👤",house:"🏠",road:"🛣️",door:"🚪",money:"💰",phone:"📱",vehicle:"🚗",stairs:"🪜",mirror:"🪞",clothes:"👕",food:"🍽️",darkness:"🌑",light:"💡",blood:"🩸",pregnancy:"🤰",wedding:"💍",war:"⚔️",flowers:"🌸"};return m[id]||"✦";}
+
+/* ============ FORTUNE ============ */
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function renderFortune(){
+  const area=document.getElementById('cookieArea');
+  const saved=DB.getJSON('fortune',null);
+  if(saved&&saved.day===todayKey()){
+    showFortune(saved.idx,saved.nums,true);
+  }else{
+    area.innerHTML=`<div class="big" onclick="crackCookie()">🥠</div><p class="ssub" style="margin-top:14px">${T('tapCookie')}</p>`;
+  }
+}
+function crackCookie(){
+  // deterministic-ish per day but feels random
+  const idx=Math.floor(Math.random()*FORTUNES.length);
+  const nums=[]; while(nums.length<4){const n=Math.floor(Math.random()*49)+1;if(!nums.includes(n))nums.push(n);}
+  DB.setJSON('fortune',{day:todayKey(),idx,nums});
+  showFortune(idx,nums,false);
+}
+function showFortune(idx,nums,returning){
+  const area=document.getElementById('cookieArea');
+  area.innerHTML=`<div class="big">🥠</div>
+    <div class="fortune-msg">${FORTUNES[idx]}</div>
+    <div class="ssub" style="margin-top:16px">${T('luckyNums')}</div>
+    <div class="fortune-lucky">${nums.map(n=>`<div class="n">${n}</div>`).join('')}</div>
+    ${returning?`<p class="small" style="margin-top:16px">${T('comeTomorrow')}</p>`:''}`;
+}
+
+/* ============ HISTORY ============ */
+function saveHistory(type,title,sub){
+  const h=DB.getJSON('history',[]);
+  h.unshift({type,title,sub,t:Date.now()});
+  DB.setJSON('history',h.slice(0,50));
+}
+
+/* ============ SETTINGS RENDER ============ */
+function renderSettings(){
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('rNameV',state.name||'—');
+  set('rLangV',LANG_NAMES[state.lang]);
+  set('rThemeV',state.light?T('day'):T('night'));
+  set('rAIV',(AI.provider&&AI.key)?(AI_PROVIDERS[AI.provider].name):T('aiOff'));
+  // swatches
+  const sw=document.getElementById('swatches'); sw.innerHTML='';
+  const pals=['royal','ember','emerald','rose'];
+  const palColors={royal:'#8a7cff',ember:'#e07a4f',emerald:'#4fbf8f',rose:'#e075a8'};
+  // default gold
+  const dg=document.createElement('div'); dg.className='sw'+(state.pal==='gold'?' sel':''); dg.style.background='linear-gradient(135deg,#d4af37,#0d0d10)'; dg.onclick=()=>setPal('gold'); sw.appendChild(dg);
+  pals.forEach(p=>{const d=document.createElement('div');d.className='sw'+(state.pal===p?' sel':'');d.style.background=palColors[p];d.onclick=()=>setPal(p);sw.appendChild(d);});
+  updateAiDot();
+}
+function setPal(p){state.pal=p;DB.set('pal',p);applyTheme();renderSettings();}
+function cycleLang(){const ls=['he','en','ru','es','ar'];const i=ls.indexOf(state.lang);state.lang=ls[(i+1)%ls.length];DB.set('lang',state.lang);applyLang();renderSettings();}
+function toggleLight(){state.light=!state.light;DB.set('light',state.light?'1':'0');applyTheme();renderSettings();}
+function editName(){const v=prompt(T('namePrompt'),state.name||'');if(v!==null){state.name=v.trim();DB.set('name',state.name);renderSettings();toast(T('saved'));}}
+function updateAiDot(){const d=document.getElementById('aiDot');if(d)d.classList.toggle('on',!!(AI.provider&&AI.key));}
+
+/* ============ AI MODAL ============ */
+function openAI(){
+  const m=document.createElement('div'); m.className='modal'; m.id='aiModal';
+  m.onclick=(e)=>{if(e.target===m)m.remove();};
+  let provs='';
+  Object.keys(AI_PROVIDERS).forEach(k=>{
+    const p=AI_PROVIDERS[k];
+    provs+=`<div class="prov ${AI.provider===k?'sel':''}" onclick="pickProv('${k}')" id="prov-${k}">
+      <div class="pi">${p.icon}</div><div class="pt"><b>${p.name}</b></div>
+      <span class="ptag ${p.tag}">${p.tag.toUpperCase()}</span></div>`;
+  });
+  m.innerHTML=`<div class="box">
+    <h3>${T('aiTitle')}</h3>
+    <p class="small">${T('aiIntro')}</p>
+    <div class="provlist">${provs}</div>
+    <div id="aiConfig"></div>
+    <button class="btn ghost" onclick="document.getElementById('aiModal').remove()" style="margin-top:16px">✕</button>
+  </div>`;
+  document.body.appendChild(m);
+  if(AI.provider)pickProv(AI.provider);
+}
+function pickProv(k){
+  AI._tmpProv=k;
+  document.querySelectorAll('.prov').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('prov-'+k).classList.add('sel');
+  const p=AI_PROVIDERS[k];
+  const cfg=document.getElementById('aiConfig');
+  const opts=p.models.map(m=>`<option value="${m}" ${AI.model===m?'selected':''}>${m}</option>`).join('');
+  cfg.innerHTML=`
+    <label class="lbl">${T('aiKey')}</label>
+    <input class="field" id="aiKeyInput" type="password" placeholder="${T('aiKeyPlace')}" value="${AI.provider===k?esc(AI.key):''}">
+    <div class="small" style="margin-top:6px">🔗 <a href="${p.link}" target="_blank">${p.link}</a></div>
+    <label class="lbl">${T('aiModel')}</label>
+    <select class="selectf" id="aiModelSel">${opts}</select>
+    <button class="btn ghost" onclick="refreshModels()" style="margin-top:10px">${T('aiRefresh')}</button>
+    <div style="display:flex;gap:10px">
+      <button class="btn ghost" onclick="testAI()" style="flex:1">${T('aiTest')}</button>
+      <button class="btn" onclick="saveAI()" style="flex:1">${T('aiSave')}</button>
+    </div>
+    ${AI.provider===k&&AI.key?`<button class="btn ghost" onclick="disconnectAI()" style="color:var(--danger)">${T('aiDisconnect')}</button>`:''}
+    <div id="aiStatus" class="small" style="margin-top:10px"></div>
+    <div class="small" style="margin-top:12px;color:var(--dim)">${T('aiPrivacy')}</div>`;
+}
+async function refreshModels(){
+  const k=AI._tmpProv, key=cleanKey(document.getElementById('aiKeyInput').value);
+  const st=document.getElementById('aiStatus'); if(!key){st.textContent=T('aiNoKey');return;}
+  st.innerHTML=`<span class="spin"></span>`;
+  try{
+    let list=[];
+    if(k==='gemini'){const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);const d=await r.json();list=(d.models||[]).filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent')).map(m=>m.name.replace('models/',''));}
+    else if(k==='openai'){const r=await fetch("https://api.openai.com/v1/models",{headers:{authorization:"Bearer "+key}});const d=await r.json();list=(d.data||[]).map(m=>m.id).filter(id=>/gpt/.test(id));}
+    else if(k==='claude'){const r=await fetch("https://api.anthropic.com/v1/models",{headers:{"x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"}});const d=await r.json();list=(d.data||[]).map(m=>m.id);}
+    if(list.length){const sel=document.getElementById('aiModelSel');sel.innerHTML=list.map(m=>`<option value="${m}">${m}</option>`).join('');st.textContent='✓ '+list.length;}
+    else st.textContent='—';
+  }catch(e){st.textContent=T('aiFail')+e.message;}
+}
+async function testAI(){
+  const st=document.getElementById('aiStatus');
+  const key=cleanKey(document.getElementById('aiKeyInput').value);
+  if(!key){st.textContent=T('aiNoKey');return;}
+  st.innerHTML=`<span class="spin"></span> ${T('aiTesting')}`;
+  const prev={...AI};
+  AI={provider:AI._tmpProv,key,model:document.getElementById('aiModelSel').value};
+  try{ await callAI("say ok",""); st.innerHTML=`<span style="color:var(--ok)">${T('aiOk')}</span>`; }
+  catch(e){ st.innerHTML=`<span style="color:var(--danger)">${T('aiFail')}${esc(e.message).slice(0,120)}</span>`; }
+  AI=prev;
+}
+function saveAI(){
+  const key=cleanKey(document.getElementById('aiKeyInput').value);
+  if(!key){document.getElementById('aiStatus').textContent=T('aiNoKey');return;}
+  AI={provider:AI._tmpProv,key,model:document.getElementById('aiModelSel').value};
+  DB.setJSON('ai',{provider:AI.provider,key:AI.key,model:AI.model});
+  updateAiDot();renderSettings();
+  document.getElementById('aiModal').remove();
+  toast(T('aiConnected'));
+}
+function disconnectAI(){
+  AI={provider:null,key:'',model:''};DB.del('ai');updateAiDot();renderSettings();
+  document.getElementById('aiModal').remove();toast(T('aiDisc'));
+}
+
+/* ============ DATA: export/import/clear ============ */
+function doExport(){
+  const data={app:"MysticNest",version:VERSION,user:state.name,date:new Date().toISOString(),
+    history:DB.getJSON('history',[]),fortune:DB.getJSON('fortune',null)};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`mysticnest_backup_${todayKey()}.json`;a.click();
+  toast(T('exported'));
+}
+function doImport(){document.getElementById('importFile').click();}
+function importFile(e){
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(d.history)DB.setJSON('history',d.history);if(d.fortune)DB.setJSON('fortune',d.fortune);if(d.user){state.name=d.user;DB.set('name',d.user);}renderSettings();toast(T('importOk'));}catch(err){toast(T('importErr'));}};
+  r.readAsText(f);
+}
+function clearAll(){
+  if(!confirm(T('confirmClear')))return;
+  ['history','fortune','ai'].forEach(k=>DB.del(k));
+  AI={provider:null,key:'',model:''};updateAiDot();renderSettings();toast(T('cleared'));
+}
+
+/* ============ ABOUT actions ============ */
+function openStore(){window.open('https://barakaflalo.github.io/appnest','_blank');}
+function shareApp(){if(navigator.share){navigator.share({title:'MysticNest',text:'🔮 MysticNest — טארוט, פירוש חלומות ועוגיית מזל',url:location.href});}else{navigator.clipboard.writeText(location.href);toast(T('copied'));}}
+function sendFeedback(){location.href='mailto:appnest55@gmail.com?subject=MysticNest%20Feedback';}
+function openPrivacy(){window.open('privacy_policy.html','_blank');}
+function showGuide(){
+  const m=document.createElement('div');m.className='modal';m.onclick=(e)=>{if(e.target===m)m.remove();};
+  m.innerHTML=`<div class="box"><h3>${T('guideTitle')}</h3><div class="bd" style="white-space:pre-wrap;font-size:14px;line-height:1.7">${T('guideBody')}</div><button class="btn ghost" onclick="this.closest('.modal').remove()" style="margin-top:16px">✓</button></div>`;
+  document.body.appendChild(m);
+}
+
+/* ============ helpers ============ */
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),1900);}
+function shake(id){const e=document.getElementById(id);e.style.borderColor='var(--danger)';setTimeout(()=>e.style.borderColor='',800);}
+function stars(){const c=document.getElementById('stars');for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=Math.random()*3+'s';c.appendChild(s);}}
+
+/* ============ backup nudge ============ */
+function checkBackupNudge(){
+  const h=DB.getJSON('history',[]);
+  if(h.length<3)return;
+  const last=DB.get('lastBackup')||DB.get('firstUse');
+  const days=(Date.now()-Number(last||Date.now()))/864e5;
+  if(days>7&&!DB.get('nudgeDismissed')){
+    const el=document.getElementById('backupReminder');
+    el.innerHTML=`<div class="reading" style="margin-top:16px;border-color:var(--gold)"><div class="m">💾 ${T('backupNudge')}</div>
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="btn" style="margin:0;flex:1" onclick="doExport();DB.set('lastBackup',Date.now());this.closest('.reading').remove()">${T('backupNow')}</button>
+      <button class="btn ghost" style="margin:0;flex:1" onclick="DB.set('nudgeDismissed','1');this.closest('.reading').remove()">${T('dismiss')}</button></div></div>`;
+  }
+}
+
+/* ============ INIT ============ */
+function init(){
+  if(!DB.get('firstUse'))DB.set('firstUse',Date.now());
+  applyTheme();applyLang();stars();updateAiDot();
+  renderSpreadChips();
+  checkBackupNudge();
+  document.getElementById('aboutVer').textContent=(state.lang==='he'?'גרסה ':'v')+VERSION;
+}
+init();
+
+/* register service worker */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
+
+</script>
+</body>
+</html>

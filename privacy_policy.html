@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d0d10">
+<title>מדיניות פרטיות · MysticNest</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Heebo","Segoe UI",system-ui,sans-serif;background:#0d0d10;color:#f3ecd8;line-height:1.75;padding:24px 18px 60px}
+.wrap{max-width:640px;margin:0 auto}
+h1{color:#d4af37;font-size:26px;margin-bottom:4px}
+h2{color:#f0d67a;font-size:19px;margin:26px 0 8px;border-bottom:1px solid #2a2a35;padding-bottom:6px}
+p,li{font-size:15px;color:#e8e0cc;margin-bottom:8px}
+ul{padding-inline-start:22px;margin-bottom:8px}
+.sub{color:#9a927e;font-size:13px;margin-bottom:20px}
+.toggle{display:flex;gap:8px;margin-bottom:24px}
+.toggle button{flex:1;background:#17171e;border:1px solid #2a2a35;color:#f3ecd8;padding:10px;border-radius:12px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.toggle button.on{background:#d4af37;color:#1a1508;border-color:#d4af37}
+a{color:#d4af37}
+.back{display:inline-block;margin-top:24px;color:#9a927e;font-size:14px}
+.badge{text-align:center;color:#9a927e;font-size:12px;margin-top:30px}
+.badge b{color:#d4af37}
+section{display:none}section.on{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="toggle">
+  <button id="btn-he" class="on" onclick="show('he')">עברית</button>
+  <button id="btn-en" onclick="show('en')">English</button>
+</div>
+
+<!-- HEBREW -->
+<section id="he" class="on" dir="rtl">
+  <h1>🔮 מדיניות פרטיות</h1>
+  <p class="sub">MysticNest · AppNest · עודכן 2026</p>
+
+  <p>אנחנו מכבדים את הפרטיות שלך. האפליקציה תוכננה כך שכל המידע נשאר אצלך.</p>
+
+  <h2>הכול נשמר על המכשיר</h2>
+  <p>ההיסטוריה שלך (קריאות טארוט, פירושי חלומות, עוגיית המזל), השם, ההעדפות ומפתח הבינה — כולם נשמרים מקומית בדפדפן שלך (localStorage) בלבד. הם אינם נשלחים לשום שרת של AppNest, ואין לנו גישה אליהם.</p>
+
+  <h2>מה נשלח החוצה — ומתי</h2>
+  <p>האפליקציה עובדת במלואה במצב לא-מקוון, על בסיס מאגרים מובנים. מידע יוצא מהמכשיר רק במקרה אחד: אם בחרת לחבר מפתח בינה מלאכותית אישי (BYOK) והפעלת פיצ'ר בינה (למשל "העמק עם הבינה" או "פירוש אישי").</p>
+  <ul>
+    <li>במקרה כזה, הטקסט שכתבת (השאלה או תיאור החלום) נשלח <b>ישירות מהדפדפן שלך אל ספק הבינה שבחרת</b> (Anthropic / Google / OpenAI / שרת מקומי) — ולעולם לא דרך שרת של AppNest.</li>
+    <li>מפתח ה-API שלך נשמר על המכשיר ומשמש רק לשליחת הבקשות הישירות האלה.</li>
+    <li>השימוש בכל ספק כפוף גם למדיניות הפרטיות שלו.</li>
+  </ul>
+
+  <h2>אין מעקב</h2>
+  <p>אין באפליקציה אנליטיקה, קובצי מעקב (cookies) פרסומיים, פרסומות או איסוף נתונים כלשהו. איננו יודעים מי אתה או מה חלמת.</p>
+
+  <h2>שליטה מלאה בנתונים</h2>
+  <p>אתה יכול לייצא את הנתונים לקובץ גיבוי, לשחזר אותם, או למחוק הכול בכל רגע דרך מסך ההגדרות. מחיקה היא סופית.</p>
+
+  <h2>לבידור והשראה בלבד</h2>
+  <p>MysticNest נועד להנאה, להרהור ולהשראה. קריאות הטארוט, פירושי החלומות ועוגיות המזל אינם ניבוי עתיד, אבחון או ייעוץ מקצועי (רפואי, נפשי, משפטי או כלכלי). הסתמך על שיקול דעתך, ובעת הצורך פנה לאיש מקצוע מוסמך.</p>
+
+  <h2>יצירת קשר</h2>
+  <p>שאלות? כתבו לנו: <a href="mailto:appnest55@gmail.com">appnest55@gmail.com</a></p>
+
+  <a href="index.html" class="back">‹ חזרה לאפליקציה</a>
+</section>
+
+<!-- ENGLISH -->
+<section id="en" dir="ltr">
+  <h1>🔮 Privacy Policy</h1>
+  <p class="sub">MysticNest · AppNest · Updated 2026</p>
+
+  <p>We respect your privacy. The app is designed so that all your information stays with you.</p>
+
+  <h2>Everything stays on your device</h2>
+  <p>Your history (tarot readings, dream interpretations, the daily cookie), your name, preferences and AI key are all stored locally in your browser (localStorage) only. They are never sent to any AppNest server, and we have no access to them.</p>
+
+  <h2>What is sent out — and when</h2>
+  <p>The app works fully offline using its built-in databases. Data leaves your device in only one case: if you chose to connect your own AI key (BYOK) and activated an AI feature (e.g. "Deepen with AI" or "Personal reading").</p>
+  <ul>
+    <li>In that case, the text you wrote (your question or dream description) is sent <b>directly from your browser to the AI provider you chose</b> (Anthropic / Google / OpenAI / a local server) — never through an AppNest server.</li>
+    <li>Your API key is stored on your device and used only to send these direct requests.</li>
+    <li>Use of each provider is also subject to that provider's own privacy policy.</li>
+  </ul>
+
+  <h2>No tracking</h2>
+  <p>The app contains no analytics, advertising cookies, ads or any data collection. We don't know who you are or what you dreamed.</p>
+
+  <h2>Full control of your data</h2>
+  <p>You can export your data to a backup file, restore it, or delete everything at any time from the Settings screen. Deletion is permanent.</p>
+
+  <h2>For entertainment and inspiration only</h2>
+  <p>MysticNest is for enjoyment, reflection and inspiration. The tarot readings, dream interpretations and fortune cookies are not fortune-telling, diagnosis or professional advice (medical, mental, legal or financial). Rely on your own judgment, and consult a qualified professional when needed.</p>
+
+  <h2>Contact</h2>
+  <p>Questions? Write to us: <a href="mailto:appnest55@gmail.com">appnest55@gmail.com</a></p>
+
+  <a href="index.html" class="back">‹ Back to the app</a>
+</section>
+
+<div class="badge">✨ <b>AppNest</b> · 2026</div>
+</div>
+<script>
+function show(l){
+  document.getElementById('he').classList.toggle('on',l==='he');
+  document.getElementById('en').classList.toggle('on',l==='en');
+  document.getElementById('btn-he').classList.toggle('on',l==='he');
+  document.getElementById('btn-en').classList.toggle('on',l==='en');
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==='he')?'rtl':'ltr';
+}
+</script>
+</body>
+</html>
