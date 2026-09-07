@@ -37,3 +37,5 @@ body:has(.card-zoom[open]){overflow:hidden}
 @media(max-width:440px){.spread{gap:16px 8px}.card-name{font-size:14px}.card-position{font-size:12px}.tcard .face{border-radius:7px}.spread.single{grid-template-columns:minmax(0,250px)}}
 @media(max-width:600px){.zoom-layout{grid-template-columns:1fr}.zoom-art{max-height:62dvh}.card-zoom{padding:16px}.zoom-copy h2{font-size:23px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+.zoom-layout{align-items:start}.card-details{border-top:1px solid var(--line);margin-top:22px;padding-top:4px}.card-details section{margin-top:22px}.card-details h3{font-size:17px;color:var(--gold);margin:0}.card-details section p{margin-top:6px}.card-details .detail-note{font-size:13px;color:var(--dim)}.zoom-close{position:sticky;top:0;z-index:2;background:var(--bg)}

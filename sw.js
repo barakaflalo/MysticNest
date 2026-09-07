@@ -1,12 +1,12 @@
 /* MysticNest: atomic shell installation, explicit updates, cache-first versioned art. */
 importScripts('./deck-manifest.js');
-const SHELL='mysticnest-shell-v2';
+const SHELL='mysticnest-shell-v4';
 const ART='mysticnest-deck-'+MYSTIC_DECK.version;
-const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./offline.js','./deck-manifest.js'];
+const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./offline.js','./deck-manifest.js'];
 const scope=new URL('./',self.location.href);
 const artPrefix=new URL(MYSTIC_DECK.base,scope).href;
 const coreURLs=new Set(CORE.map(path=>new URL(path,scope).href));
-self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(CORE)));});
+self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(CORE.map(path=>new Request(new URL(path,scope),{cache:'reload'})))));});
 self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')event.waitUntil(self.skipWaiting());});
 self.addEventListener('activate',event=>{
   // Keep previous deck versions: another open window may still be using one.

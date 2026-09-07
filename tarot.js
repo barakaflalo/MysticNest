@@ -86,7 +86,17 @@ function openCardZoom(i){
   const english=document.createElement('p');english.className='en';english.textContent=pick.card.en;
   const orientation=document.createElement('p');orientation.textContent=pick.rev?deckText('קלף הפוך','Reversed card'):deckText('קלף ישר','Upright card');
   const meaning=document.createElement('p');meaning.dir='rtl';meaning.lang='he';meaning.textContent=pick.rev?pick.card.rev:pick.card.up;
-  copy.append(title,english,orientation,meaning);layout.append(imageWrap,copy);dialog.append(close,layout);document.body.append(dialog);
+  copy.append(title,english,orientation,meaning);
+  appendCardDetails(copy,pick);layout.append(imageWrap,copy);dialog.append(close,layout);document.body.append(dialog);
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
   dialog.addEventListener('close',()=>{dialog.remove();trigger?.focus();},{once:true});dialog.showModal();
+}
+
+function appendCardDetails(copy,pick){
+  const detail=globalThis.MYSTIC_CARD_DETAILS?.[pick.card.id];if(!detail)return;
+  const content=document.createElement('div');content.className='card-details';content.dir='rtl';content.lang='he';
+  for(const [heading,text] of [['מבט מעמיק',pick.rev?detail.rev:detail.up],['השפה הסמלית של הקלף',detail.symbols],['שאלה למחשבה',detail.question],['צעד קטן שאפשר לנסות',detail.step]]){
+    const section=document.createElement('section'),h=document.createElement('h3'),p=document.createElement('p');h.textContent=heading;p.textContent=text;section.append(h,p);content.append(section);
+  }
+  const note=document.createElement('p');note.className='detail-note';note.textContent='הפירוש מציע כיוון להתבוננות. אפשר לקחת ממנו את מה שמתאים לחוויה שלך.';content.append(note);copy.append(content);
 }
