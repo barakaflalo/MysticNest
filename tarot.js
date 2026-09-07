@@ -66,7 +66,7 @@ function showReading(){
     const position=document.createElement('span');position.className='p';position.textContent=positions[i]+' · '+(pick.rev?deckText('הפוך','Reversed'):deckText('ישר','Upright'));
     head.append(thumb,title,position);
     const meaning=document.createElement('div');meaning.className='m';meaning.dir='rtl';meaning.lang='he';meaning.textContent=pick.rev?pick.card.rev:pick.card.up;
-    item.append(head,meaning);reading.append(item);
+    item.append(head,meaning);const contextual=cardPositionReading(pick,sp.pos_he[i]);if(contextual){const p=document.createElement('p');p.className='position-hint';p.textContent=contextual.short;item.append(p);}reading.append(item);
   });
   box.append(reading);
   if(AI.provider&&AI.key){
@@ -77,6 +77,9 @@ function showReading(){
 function openCardZoom(i){
   const pick=currentDraw?.picks[i];if(!pick||!pick.revealed)return;
   const trigger=document.getElementById('tc'+i);
+  openCardDetail(pick,trigger,SPREADS[currentDraw.spread].pos_he[i]);
+}
+function openCardDetail(pick,trigger,position){
   const dialog=document.createElement('dialog');dialog.className='card-zoom';dialog.setAttribute('aria-labelledby','zoomTitle');
   const close=document.createElement('button');close.className='zoom-close';close.textContent=deckText('סגור ×','Close ×');close.onclick=()=>dialog.close();
   const layout=document.createElement('div');layout.className='zoom-layout';
@@ -87,7 +90,7 @@ function openCardZoom(i){
   const orientation=document.createElement('p');orientation.textContent=pick.rev?deckText('קלף הפוך','Reversed card'):deckText('קלף ישר','Upright card');
   const meaning=document.createElement('p');meaning.dir='rtl';meaning.lang='he';meaning.textContent=pick.rev?pick.card.rev:pick.card.up;
   copy.append(title,english,orientation,meaning);
-  appendCardDetails(copy,pick);layout.append(imageWrap,copy);dialog.append(close,layout);document.body.append(dialog);
+  appendPositionReading(copy,pick,position);appendCardDetails(copy,pick);copy.append(feedbackWidget('tarot:'+pick.card.id+':'+(pick.rev?'rev':'up')+':'+(position||'library'),{type:'tarot',id:pick.card.id,rev:pick.rev,position:position||'library'}));layout.append(imageWrap,copy);dialog.append(close,layout);document.body.append(dialog);
   dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
   dialog.addEventListener('close',()=>{dialog.remove();trigger?.focus();},{once:true});dialog.showModal();
 }
