@@ -369,7 +369,7 @@ a{color:var(--gold)}
 /* =========================================================
    MysticNest — AppNest single-file app
    ========================================================= */
-const VERSION="2.2";
+const VERSION="2.3";
 const PREFIX="mystic_";
 
 /* ---------- storage shim ---------- */
@@ -1264,7 +1264,7 @@ function importFile(e){
 function clearAll(){
   if(!confirm(T('confirmClear')))return;
   ['history','fortune','ai','dreamJournal'].forEach(k=>DB.del(k));
-  AI={provider:null,key:'',model:''};currentDream=null;document.getElementById('dreamText').value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();updateAiDot();renderSettings();toast(T('cleared'));
+  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();updateAiDot();renderSettings();toast(T('cleared'));
 }
 
 /* ============ ABOUT actions ============ */
@@ -1310,7 +1310,9 @@ function init(){
 <script src="deck-manifest.js"></script>
 <script src="card-details.js"></script>
 <script src="tarot.js"></script>
+<script src="dream-library.js"></script>
 <script src="dreams.js"></script>
+<script src="dream-engine.js"></script>
 <script src="offline.js"></script>
 <script>
 init();

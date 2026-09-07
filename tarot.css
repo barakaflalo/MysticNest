@@ -41,3 +41,5 @@ body:has(.card-zoom[open]){overflow:hidden}
 .zoom-layout{align-items:start}.card-details{border-top:1px solid var(--line);margin-top:22px;padding-top:4px}.card-details section{margin-top:22px}.card-details h3{font-size:17px;color:var(--gold);margin:0}.card-details section p{margin-top:6px}.card-details .detail-note{font-size:13px;color:var(--dim)}.zoom-close{position:sticky;top:0;z-index:2;background:var(--bg)}
 
 #dreamResult p,.dream-journal p{line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}.dream-symbol summary,.dream-journal summary{cursor:pointer;color:var(--gold);padding:10px 0}.dream-entry{border-top:1px solid var(--line);padding:12px 0}#dreamContext select{color:var(--txt);background:var(--bg);margin-bottom:14px}
+
+.dream-personal summary,.dream-library summary{cursor:pointer;color:var(--gold);padding:12px 0}.dream-personal{margin:12px 0 20px}.dream-library details{border-top:1px solid var(--line)}.dream-personal-note{padding:12px;border-inline-start:3px solid var(--gold);background:var(--bg)}
