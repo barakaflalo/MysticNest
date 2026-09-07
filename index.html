@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0d0d10">
 <title>MysticNest · מיסטיק</title>
 <link rel="manifest" href="manifest.json">
@@ -208,6 +208,7 @@ a{color:var(--gold)}
 .ob .od{width:8px;height:8px;border-radius:50%;background:var(--line)}
 .ob .od.on{background:var(--gold);width:22px;border-radius:4px}
 </style>
+<link rel="stylesheet" href="tarot.css">
 </head>
 <body data-pal="gold">
 <div id="stars"></div>
@@ -256,7 +257,7 @@ a{color:var(--gold)}
   <h2 class="stitle" id="tarotH">🔮 קריאת טארוט</h2>
   <p class="ssub" id="tarotSub">חשוב על שאלה, בחר פריסה, ושלוף את הקלפים.</p>
 
-  <label class="lbl" id="lblQ">השאלה שלך (אופציונלי)</label>
+  <label class="lbl" id="lblQ" for="tarotQ">השאלה שלך (אופציונלי)</label>
   <input class="field" id="tarotQ" placeholder="למשל: מה כדאי לי לדעת השבוע?">
 
   <label class="lbl" id="lblSpread">בחר פריסה</label>
@@ -264,6 +265,12 @@ a{color:var(--gold)}
 
   <button class="btn" id="drawBtn" onclick="drawTarot()">🎴 <span id="drawTxt">שלוף קלפים</span></button>
 
+  <div class="deck-status" aria-live="polite">
+    <span id="deckStatusText">בודק את זמינות החפיסה…</span>
+    <progress id="deckProgress" max="79" value="0" aria-label="שמירת החפיסה"></progress>
+    <button type="button" id="deckSave" class="deck-action" onclick="downloadDeck()" hidden>שמור לשימוש ללא אינטרנט</button>
+    <button type="button" id="appUpdate" class="deck-action" hidden>גרסה חדשה מוכנה — רענן</button>
+  </div>
   <div id="tarotResult"></div>
 </div>
 
@@ -362,7 +369,7 @@ a{color:var(--gold)}
 /* =========================================================
    MysticNest — AppNest single-file app
    ========================================================= */
-const VERSION="1.0";
+const VERSION="2.0";
 const PREFIX="mystic_";
 
 /* ---------- storage shim ---------- */
@@ -1003,6 +1010,7 @@ function applyLang(){
   set('aboutDisc',T('aboutDisc'));
   document.querySelectorAll('.backbtn span').forEach(s=>s.textContent=T('back'));
   renderSpreadChips();
+  if (typeof renderDeckStatus === "function") renderDeckStatus();
 }
 function applyTheme(){
   document.body.setAttribute('data-pal',state.pal);
@@ -1024,51 +1032,6 @@ function renderSpreadChips(){
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 let currentDraw=null;
-function drawTarot(){
-  const sp=SPREADS[state.spread];
-  const deck=shuffle([...TAROT_MAJOR,...TAROT_MINOR]);
-  const picks=deck.slice(0,sp.n).map(card=>({card,rev:Math.random()<0.35}));
-  currentDraw={q:document.getElementById('tarotQ').value.trim(),spread:state.spread,picks};
-  const posArr=state.lang==='he'?sp.pos_he:sp.pos_en;
-  const res=document.getElementById('tarotResult');
-  let html=`<p class="ssub" style="text-align:center;margin-top:16px">👆 ${T('tapReveal')}</p><div class="spread">`;
-  picks.forEach((p,i)=>{
-    html+=`<div class="tcard" id="tc${i}" onclick="flipCard(${i})">
-      <div class="inner"><div class="face back"><div class="sym">✦</div><div class="pos">${posArr[i]}</div></div>
-      <div class="face front ${p.rev?'rev':''}">
-        <div class="em ${p.rev?'rev-em':''}">${p.card.icon}</div>
-        <div class="nm">${p.card.he}</div><div class="en">${p.card.en}</div>
-        <div class="tag ${p.rev?'r':''}">${p.rev?(state.lang==='he'?'הפוך':'Reversed'):(state.lang==='he'?'ישר':'Upright')}</div>
-      </div></div></div>`;
-  });
-  html+=`</div><div id="tarotReading"></div>`;
-  res.innerHTML=html;
-  document.getElementById('drawTxt').textContent=T('redraw');
-  saveHistory('tarot',(currentDraw.q||sp[state.lang==='he'?'he':'en']),picks.map(p=>p.card.he).join(' · '));
-}
-function flipCard(i){
-  const el=document.getElementById('tc'+i);
-  if(el.classList.contains('flip'))return;
-  el.classList.add('flip');
-  // when all flipped, show reading
-  const all=[...document.querySelectorAll('.tcard')];
-  if(all.every(c=>c.classList.contains('flip'))) setTimeout(showReading,650);
-}
-function showReading(){
-  if(document.getElementById('tarotReading').innerHTML)return;
-  const sp=SPREADS[currentDraw.spread];
-  const posArr=state.lang==='he'?sp.pos_he:sp.pos_en;
-  let html=`<div class="reading">`;
-  currentDraw.picks.forEach((p,i)=>{
-    const meaning=p.rev?p.card.rev:p.card.up;
-    html+=`<div class="rc"><div class="h">${p.card.icon} ${p.card.he} <span class="p">${posArr[i]} · ${p.rev?(state.lang==='he'?'הפוך':'Rev'):(state.lang==='he'?'ישר':'Up')}</span></div><div class="m">${meaning}</div></div>`;
-  });
-  html+=`</div>`;
-  if(AI.provider&&AI.key){
-    html+=`<button class="btn ghost" id="deepBtn" onclick="deepenTarot()">${T('deepen')}</button><div id="aiTarot"></div>`;
-  }
-  document.getElementById('tarotReading').innerHTML=html;
-}
 async function deepenTarot(){
   const box=document.getElementById('aiTarot');
   const btn=document.getElementById('deepBtn'); btn.disabled=true;
@@ -1174,9 +1137,9 @@ function showFortune(idx,nums,returning){
 }
 
 /* ============ HISTORY ============ */
-function saveHistory(type,title,sub){
+function saveHistory(type,title,sub,details){
   const h=DB.getJSON('history',[]);
-  h.unshift({type,title,sub,t:Date.now()});
+  h.unshift({type,title,sub,t:Date.now(),...(details?{details}:{})});
   DB.setJSON('history',h.slice(0,50));
 }
 
@@ -1343,12 +1306,13 @@ function init(){
   checkBackupNudge();
   document.getElementById('aboutVer').textContent=(state.lang==='he'?'גרסה ':'v')+VERSION;
 }
+</script>
+<script src="deck-manifest.js"></script>
+<script src="tarot.js"></script>
+<script src="offline.js"></script>
+<script>
 init();
-
-/* register service worker */
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
-}
+initDeckOffline();
 
 </script>
 </body>

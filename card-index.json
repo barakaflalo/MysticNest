@@ -1,0 +1,548 @@
+[
+  {
+    "id": 0,
+    "arc": "major",
+    "he": "השוטה",
+    "en": "The Fool",
+    "image": "assets/tarot/gold-v1/card-0.jpg"
+  },
+  {
+    "id": 1,
+    "arc": "major",
+    "he": "הקוסם",
+    "en": "The Magician",
+    "image": "assets/tarot/gold-v1/card-1.jpg"
+  },
+  {
+    "id": 2,
+    "arc": "major",
+    "he": "הכוהנת הגדולה",
+    "en": "The High Priestess",
+    "image": "assets/tarot/gold-v1/card-2.jpg"
+  },
+  {
+    "id": 3,
+    "arc": "major",
+    "he": "הקיסרית",
+    "en": "The Empress",
+    "image": "assets/tarot/gold-v1/card-3.jpg"
+  },
+  {
+    "id": 4,
+    "arc": "major",
+    "he": "הקיסר",
+    "en": "The Emperor",
+    "image": "assets/tarot/gold-v1/card-4.jpg"
+  },
+  {
+    "id": 5,
+    "arc": "major",
+    "he": "הכוהן הגדול",
+    "en": "The Hierophant",
+    "image": "assets/tarot/gold-v1/card-5.jpg"
+  },
+  {
+    "id": 6,
+    "arc": "major",
+    "he": "הנאהבים",
+    "en": "The Lovers",
+    "image": "assets/tarot/gold-v1/card-6.jpg"
+  },
+  {
+    "id": 7,
+    "arc": "major",
+    "he": "המרכבה",
+    "en": "The Chariot",
+    "image": "assets/tarot/gold-v1/card-7.jpg"
+  },
+  {
+    "id": 8,
+    "arc": "major",
+    "he": "הכוח",
+    "en": "Strength",
+    "image": "assets/tarot/gold-v1/card-8.jpg"
+  },
+  {
+    "id": 9,
+    "arc": "major",
+    "he": "המתבודד",
+    "en": "The Hermit",
+    "image": "assets/tarot/gold-v1/card-9.jpg"
+  },
+  {
+    "id": 10,
+    "arc": "major",
+    "he": "גלגל המזל",
+    "en": "Wheel of Fortune",
+    "image": "assets/tarot/gold-v1/card-10.jpg"
+  },
+  {
+    "id": 11,
+    "arc": "major",
+    "he": "הצדק",
+    "en": "Justice",
+    "image": "assets/tarot/gold-v1/card-11.jpg"
+  },
+  {
+    "id": 12,
+    "arc": "major",
+    "he": "התלוי",
+    "en": "The Hanged Man",
+    "image": "assets/tarot/gold-v1/card-12.jpg"
+  },
+  {
+    "id": 13,
+    "arc": "major",
+    "he": "המוות",
+    "en": "Death",
+    "image": "assets/tarot/gold-v1/card-13.jpg"
+  },
+  {
+    "id": 14,
+    "arc": "major",
+    "he": "המתינות",
+    "en": "Temperance",
+    "image": "assets/tarot/gold-v1/card-14.jpg"
+  },
+  {
+    "id": 15,
+    "arc": "major",
+    "he": "השטן",
+    "en": "The Devil",
+    "image": "assets/tarot/gold-v1/card-15.jpg"
+  },
+  {
+    "id": 16,
+    "arc": "major",
+    "he": "המגדל",
+    "en": "The Tower",
+    "image": "assets/tarot/gold-v1/card-16.jpg"
+  },
+  {
+    "id": 17,
+    "arc": "major",
+    "he": "הכוכב",
+    "en": "The Star",
+    "image": "assets/tarot/gold-v1/card-17.jpg"
+  },
+  {
+    "id": 18,
+    "arc": "major",
+    "he": "הירח",
+    "en": "The Moon",
+    "image": "assets/tarot/gold-v1/card-18.jpg"
+  },
+  {
+    "id": 19,
+    "arc": "major",
+    "he": "השמש",
+    "en": "The Sun",
+    "image": "assets/tarot/gold-v1/card-19.jpg"
+  },
+  {
+    "id": 20,
+    "arc": "major",
+    "he": "הדין",
+    "en": "Judgement",
+    "image": "assets/tarot/gold-v1/card-20.jpg"
+  },
+  {
+    "id": 21,
+    "arc": "major",
+    "he": "העולם",
+    "en": "The World",
+    "image": "assets/tarot/gold-v1/card-21.jpg"
+  },
+  {
+    "id": 100,
+    "arc": "wands",
+    "he": "אלוף המקלות",
+    "en": "Ace of Wands",
+    "image": "assets/tarot/gold-v1/card-100.jpg"
+  },
+  {
+    "id": 101,
+    "arc": "wands",
+    "he": "שניים במקלות",
+    "en": "Two of Wands",
+    "image": "assets/tarot/gold-v1/card-101.jpg"
+  },
+  {
+    "id": 102,
+    "arc": "wands",
+    "he": "שלושה במקלות",
+    "en": "Three of Wands",
+    "image": "assets/tarot/gold-v1/card-102.jpg"
+  },
+  {
+    "id": 103,
+    "arc": "wands",
+    "he": "ארבעה במקלות",
+    "en": "Four of Wands",
+    "image": "assets/tarot/gold-v1/card-103.jpg"
+  },
+  {
+    "id": 104,
+    "arc": "wands",
+    "he": "חמישה במקלות",
+    "en": "Five of Wands",
+    "image": "assets/tarot/gold-v1/card-104.jpg"
+  },
+  {
+    "id": 105,
+    "arc": "wands",
+    "he": "שישה במקלות",
+    "en": "Six of Wands",
+    "image": "assets/tarot/gold-v1/card-105.jpg"
+  },
+  {
+    "id": 106,
+    "arc": "wands",
+    "he": "שבעה במקלות",
+    "en": "Seven of Wands",
+    "image": "assets/tarot/gold-v1/card-106.jpg"
+  },
+  {
+    "id": 107,
+    "arc": "wands",
+    "he": "שמונה במקלות",
+    "en": "Eight of Wands",
+    "image": "assets/tarot/gold-v1/card-107.jpg"
+  },
+  {
+    "id": 108,
+    "arc": "wands",
+    "he": "תשעה במקלות",
+    "en": "Nine of Wands",
+    "image": "assets/tarot/gold-v1/card-108.jpg"
+  },
+  {
+    "id": 109,
+    "arc": "wands",
+    "he": "עשרה במקלות",
+    "en": "Ten of Wands",
+    "image": "assets/tarot/gold-v1/card-109.jpg"
+  },
+  {
+    "id": 110,
+    "arc": "wands",
+    "he": "נסיך המקלות",
+    "en": "Page of Wands",
+    "image": "assets/tarot/gold-v1/card-110.jpg"
+  },
+  {
+    "id": 111,
+    "arc": "wands",
+    "he": "אביר המקלות",
+    "en": "Knight of Wands",
+    "image": "assets/tarot/gold-v1/card-111.jpg"
+  },
+  {
+    "id": 112,
+    "arc": "wands",
+    "he": "מלכת המקלות",
+    "en": "Queen of Wands",
+    "image": "assets/tarot/gold-v1/card-112.jpg"
+  },
+  {
+    "id": 113,
+    "arc": "wands",
+    "he": "מלך המקלות",
+    "en": "King of Wands",
+    "image": "assets/tarot/gold-v1/card-113.jpg"
+  },
+  {
+    "id": 200,
+    "arc": "cups",
+    "he": "אלוף הגביעים",
+    "en": "Ace of Cups",
+    "image": "assets/tarot/gold-v1/card-200.jpg"
+  },
+  {
+    "id": 201,
+    "arc": "cups",
+    "he": "שניים בגביעים",
+    "en": "Two of Cups",
+    "image": "assets/tarot/gold-v1/card-201.jpg"
+  },
+  {
+    "id": 202,
+    "arc": "cups",
+    "he": "שלושה בגביעים",
+    "en": "Three of Cups",
+    "image": "assets/tarot/gold-v1/card-202.jpg"
+  },
+  {
+    "id": 203,
+    "arc": "cups",
+    "he": "ארבעה בגביעים",
+    "en": "Four of Cups",
+    "image": "assets/tarot/gold-v1/card-203.jpg"
+  },
+  {
+    "id": 204,
+    "arc": "cups",
+    "he": "חמישה בגביעים",
+    "en": "Five of Cups",
+    "image": "assets/tarot/gold-v1/card-204.jpg"
+  },
+  {
+    "id": 205,
+    "arc": "cups",
+    "he": "שישה בגביעים",
+    "en": "Six of Cups",
+    "image": "assets/tarot/gold-v1/card-205.jpg"
+  },
+  {
+    "id": 206,
+    "arc": "cups",
+    "he": "שבעה בגביעים",
+    "en": "Seven of Cups",
+    "image": "assets/tarot/gold-v1/card-206.jpg"
+  },
+  {
+    "id": 207,
+    "arc": "cups",
+    "he": "שמונה בגביעים",
+    "en": "Eight of Cups",
+    "image": "assets/tarot/gold-v1/card-207.jpg"
+  },
+  {
+    "id": 208,
+    "arc": "cups",
+    "he": "תשעה בגביעים",
+    "en": "Nine of Cups",
+    "image": "assets/tarot/gold-v1/card-208.jpg"
+  },
+  {
+    "id": 209,
+    "arc": "cups",
+    "he": "עשרה בגביעים",
+    "en": "Ten of Cups",
+    "image": "assets/tarot/gold-v1/card-209.jpg"
+  },
+  {
+    "id": 210,
+    "arc": "cups",
+    "he": "נסיך הגביעים",
+    "en": "Page of Cups",
+    "image": "assets/tarot/gold-v1/card-210.jpg"
+  },
+  {
+    "id": 211,
+    "arc": "cups",
+    "he": "אביר הגביעים",
+    "en": "Knight of Cups",
+    "image": "assets/tarot/gold-v1/card-211.jpg"
+  },
+  {
+    "id": 212,
+    "arc": "cups",
+    "he": "מלכת הגביעים",
+    "en": "Queen of Cups",
+    "image": "assets/tarot/gold-v1/card-212.jpg"
+  },
+  {
+    "id": 213,
+    "arc": "cups",
+    "he": "מלך הגביעים",
+    "en": "King of Cups",
+    "image": "assets/tarot/gold-v1/card-213.jpg"
+  },
+  {
+    "id": 300,
+    "arc": "swords",
+    "he": "אלוף החרבות",
+    "en": "Ace of Swords",
+    "image": "assets/tarot/gold-v1/card-300.jpg"
+  },
+  {
+    "id": 301,
+    "arc": "swords",
+    "he": "שניים בחרבות",
+    "en": "Two of Swords",
+    "image": "assets/tarot/gold-v1/card-301.jpg"
+  },
+  {
+    "id": 302,
+    "arc": "swords",
+    "he": "שלושה בחרבות",
+    "en": "Three of Swords",
+    "image": "assets/tarot/gold-v1/card-302.jpg"
+  },
+  {
+    "id": 303,
+    "arc": "swords",
+    "he": "ארבעה בחרבות",
+    "en": "Four of Swords",
+    "image": "assets/tarot/gold-v1/card-303.jpg"
+  },
+  {
+    "id": 304,
+    "arc": "swords",
+    "he": "חמישה בחרבות",
+    "en": "Five of Swords",
+    "image": "assets/tarot/gold-v1/card-304.jpg"
+  },
+  {
+    "id": 305,
+    "arc": "swords",
+    "he": "שישה בחרבות",
+    "en": "Six of Swords",
+    "image": "assets/tarot/gold-v1/card-305.jpg"
+  },
+  {
+    "id": 306,
+    "arc": "swords",
+    "he": "שבעה בחרבות",
+    "en": "Seven of Swords",
+    "image": "assets/tarot/gold-v1/card-306.jpg"
+  },
+  {
+    "id": 307,
+    "arc": "swords",
+    "he": "שמונה בחרבות",
+    "en": "Eight of Swords",
+    "image": "assets/tarot/gold-v1/card-307.jpg"
+  },
+  {
+    "id": 308,
+    "arc": "swords",
+    "he": "תשעה בחרבות",
+    "en": "Nine of Swords",
+    "image": "assets/tarot/gold-v1/card-308.jpg"
+  },
+  {
+    "id": 309,
+    "arc": "swords",
+    "he": "עשרה בחרבות",
+    "en": "Ten of Swords",
+    "image": "assets/tarot/gold-v1/card-309.jpg"
+  },
+  {
+    "id": 310,
+    "arc": "swords",
+    "he": "נסיך החרבות",
+    "en": "Page of Swords",
+    "image": "assets/tarot/gold-v1/card-310.jpg"
+  },
+  {
+    "id": 311,
+    "arc": "swords",
+    "he": "אביר החרבות",
+    "en": "Knight of Swords",
+    "image": "assets/tarot/gold-v1/card-311.jpg"
+  },
+  {
+    "id": 312,
+    "arc": "swords",
+    "he": "מלכת החרבות",
+    "en": "Queen of Swords",
+    "image": "assets/tarot/gold-v1/card-312.jpg"
+  },
+  {
+    "id": 313,
+    "arc": "swords",
+    "he": "מלך החרבות",
+    "en": "King of Swords",
+    "image": "assets/tarot/gold-v1/card-313.jpg"
+  },
+  {
+    "id": 400,
+    "arc": "pentacles",
+    "he": "אלוף המטבעות",
+    "en": "Ace of Pentacles",
+    "image": "assets/tarot/gold-v1/card-400.jpg"
+  },
+  {
+    "id": 401,
+    "arc": "pentacles",
+    "he": "שניים במטבעות",
+    "en": "Two of Pentacles",
+    "image": "assets/tarot/gold-v1/card-401.jpg"
+  },
+  {
+    "id": 402,
+    "arc": "pentacles",
+    "he": "שלושה במטבעות",
+    "en": "Three of Pentacles",
+    "image": "assets/tarot/gold-v1/card-402.jpg"
+  },
+  {
+    "id": 403,
+    "arc": "pentacles",
+    "he": "ארבעה במטבעות",
+    "en": "Four of Pentacles",
+    "image": "assets/tarot/gold-v1/card-403.jpg"
+  },
+  {
+    "id": 404,
+    "arc": "pentacles",
+    "he": "חמישה במטבעות",
+    "en": "Five of Pentacles",
+    "image": "assets/tarot/gold-v1/card-404.jpg"
+  },
+  {
+    "id": 405,
+    "arc": "pentacles",
+    "he": "שישה במטבעות",
+    "en": "Six of Pentacles",
+    "image": "assets/tarot/gold-v1/card-405.jpg"
+  },
+  {
+    "id": 406,
+    "arc": "pentacles",
+    "he": "שבעה במטבעות",
+    "en": "Seven of Pentacles",
+    "image": "assets/tarot/gold-v1/card-406.jpg"
+  },
+  {
+    "id": 407,
+    "arc": "pentacles",
+    "he": "שמונה במטבעות",
+    "en": "Eight of Pentacles",
+    "image": "assets/tarot/gold-v1/card-407.jpg"
+  },
+  {
+    "id": 408,
+    "arc": "pentacles",
+    "he": "תשעה במטבעות",
+    "en": "Nine of Pentacles",
+    "image": "assets/tarot/gold-v1/card-408.jpg"
+  },
+  {
+    "id": 409,
+    "arc": "pentacles",
+    "he": "עשרה במטבעות",
+    "en": "Ten of Pentacles",
+    "image": "assets/tarot/gold-v1/card-409.jpg"
+  },
+  {
+    "id": 410,
+    "arc": "pentacles",
+    "he": "נסיך המטבעות",
+    "en": "Page of Pentacles",
+    "image": "assets/tarot/gold-v1/card-410.jpg"
+  },
+  {
+    "id": 411,
+    "arc": "pentacles",
+    "he": "אביר המטבעות",
+    "en": "Knight of Pentacles",
+    "image": "assets/tarot/gold-v1/card-411.jpg"
+  },
+  {
+    "id": 412,
+    "arc": "pentacles",
+    "he": "מלכת המטבעות",
+    "en": "Queen of Pentacles",
+    "image": "assets/tarot/gold-v1/card-412.jpg"
+  },
+  {
+    "id": 413,
+    "arc": "pentacles",
+    "he": "מלך המטבעות",
+    "en": "King of Pentacles",
+    "image": "assets/tarot/gold-v1/card-413.jpg"
+  }
+]

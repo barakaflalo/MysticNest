@@ -1,0 +1,39 @@
+.spread{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px;align-items:start}
+.spread.single{grid-template-columns:minmax(0,260px);justify-content:center}
+.tcard{width:100%;min-width:0;display:block;text-align:center;perspective:1100px;cursor:pointer}
+.tcard .inner{height:auto;aspect-ratio:2/3;display:block}
+.tcard .face{display:block;padding:0;overflow:hidden;border:0;border-radius:10px;background:#0d0d10;box-shadow:0 8px 22px #0005}
+.tcard .back{display:grid;place-items:center;border:1px solid #b89040}
+.tcard .back .sym{font-size:48px;color:#d4af37}
+.tcard .front{transform:rotateY(180deg)}
+.tcard img{display:block;width:100%;height:100%;object-fit:contain;background:#0d0d10}
+.tcard .front.rev{background:#0d0d10}
+.tcard .rev-art{transform:rotate(180deg)}
+.card-caption{display:block;padding-top:10px;line-height:1.4}
+.card-position{display:block;font-size:13px;color:var(--dim);margin-bottom:4px}
+.card-name{display:block;font-size:16px;color:var(--gold);font-weight:800;overflow-wrap:anywhere}
+.card-state{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+.card-unavailable{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;height:100%;padding:12px;color:#f0d67a;font-size:14px;line-height:1.5}
+.tcard:focus-visible,.deck-action:focus-visible,.zoom-close:focus-visible{outline:3px solid var(--gold);outline-offset:5px}
+.spread.cross{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-areas:'. past .' 'challenge situation result' '. base .';direction:ltr}
+.spread.cross .tcard:nth-child(1){grid-area:situation}.spread.cross .tcard:nth-child(2){grid-area:challenge}.spread.cross .tcard:nth-child(3){grid-area:base}.spread.cross .tcard:nth-child(4){grid-area:past}.spread.cross .tcard:nth-child(5){grid-area:result}
+.spread.cross .tcard{direction:rtl}html[dir=ltr] .spread.cross .tcard{direction:ltr}
+.deck-status{margin:18px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;color:var(--dim);font-size:13px;line-height:1.6}
+.deck-status progress{display:block;width:100%;height:5px;margin-top:9px;accent-color:var(--gold)}
+.deck-status progress[hidden]{display:none}
+.deck-action{font:inherit;display:block;color:var(--gold);text-decoration:underline;text-underline-offset:3px;padding:8px 0 0}
+.deck-action[hidden]{display:none}
+.reading .rc .h{flex-wrap:wrap}.reading .rc .m{font-size:16px;line-height:1.8}
+.reading .card-thumb{width:35px;height:53px;object-fit:contain;border-radius:3px}
+.card-zoom{position:fixed;inset:0;width:min(94vw,820px);max-height:94dvh;margin:auto;padding:22px;border:1px solid var(--gold);border-radius:18px;background:var(--bg);color:var(--txt);overflow:auto;box-shadow:0 20px 80px #0009}
+.card-zoom::backdrop{background:#000d;backdrop-filter:blur(4px)}
+.zoom-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center}
+.zoom-art{width:100%;height:auto;max-height:80dvh;object-fit:contain;border-radius:10px;display:block}
+.zoom-art.rev-art{transform:rotate(180deg)}
+.zoom-copy h2{color:var(--gold);font-size:26px}.zoom-copy p{font-size:16px;line-height:1.8;margin-top:14px}
+.zoom-copy .en{font-size:14px;color:var(--dim);direction:ltr;text-align:start}
+.zoom-close{display:block;margin-inline-start:auto;font-size:16px;padding:6px 12px;margin-bottom:12px;border:1px solid var(--line);border-radius:8px}
+body:has(.card-zoom[open]){overflow:hidden}
+@media(max-width:440px){.spread{gap:16px 8px}.card-name{font-size:14px}.card-position{font-size:12px}.tcard .face{border-radius:7px}.spread.single{grid-template-columns:minmax(0,250px)}}
+@media(max-width:600px){.zoom-layout{grid-template-columns:1fr}.zoom-art{max-height:62dvh}.card-zoom{padding:16px}.zoom-copy h2{font-size:23px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

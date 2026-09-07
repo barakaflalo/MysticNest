@@ -1,36 +1,36 @@
-/* MysticNest service worker — network-first (auto-updates), offline fallback */
-const CACHE = 'mystic-v1';
-const CORE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './privacy_policy.html'
-];
-
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
+/* MysticNest: atomic shell installation, explicit updates, cache-first versioned art. */
+importScripts('./deck-manifest.js');
+const SHELL='mysticnest-shell-v2';
+const ART='mysticnest-deck-'+MYSTIC_DECK.version;
+const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./offline.js','./deck-manifest.js'];
+const scope=new URL('./',self.location.href);
+const artPrefix=new URL(MYSTIC_DECK.base,scope).href;
+const coreURLs=new Set(CORE.map(path=>new URL(path,scope).href));
+self.addEventListener('install',event=>{event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(CORE)));});
+self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')event.waitUntil(self.skipWaiting());});
+self.addEventListener('activate',event=>{
+  // Keep previous deck versions: another open window may still be using one.
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mysticnest-shell-')&&key!==SHELL).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
 });
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', e => {
-  const req = e.request;
-  // Only handle same-origin GETs; let AI/API calls (cross-origin) pass straight through.
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  e.respondWith(
-    fetch(req)
-      .then(res => {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
-        return res;
-      })
-      .catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
-  );
+async function getArt(request){
+  const cache=await caches.open(ART),cached=await cache.match(request);
+  if(cached?.ok&&/^image\//i.test(cached.headers.get('content-type')||''))return cached;
+  try{
+    const response=await fetch(request);
+    // The page verifies and saves art. Never replace a missing image with HTML.
+    return response;
+  }catch{return new Response('',{status:503,statusText:'Artwork unavailable'});}
+}
+async function getCore(request){
+  const cache=await caches.open(SHELL),cached=await cache.match(request,{ignoreSearch:true});
+  if(cached)return cached;
+  if(request.mode==='navigate')return (await cache.match('./index.html'))||Response.error();
+  try{return await fetch(request);}catch{return Response.error();}
+}
+self.addEventListener('fetch',event=>{
+  const request=event.request,url=new URL(request.url);
+  if(request.method!=='GET'||url.origin!==scope.origin)return;
+  if(url.href.startsWith(artPrefix)){event.respondWith(getArt(request));return;}
+  url.search='';url.hash='';
+  if(coreURLs.has(url.href)||(request.mode==='navigate'&&url.href.startsWith(scope.href)))event.respondWith(getCore(request));
 });
