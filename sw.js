@@ -1,8 +1,8 @@
 /* MysticNest: atomic shell installation, explicit updates, cache-first versioned art. */
 importScripts('./deck-manifest.js');
-const SHELL='mysticnest-shell-v13';
+const SHELL='mysticnest-shell-v18';
 const ART='mysticnest-deck-'+MYSTIC_DECK.version;
-const CORE=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./dreams.js','./dream-library.js','./dream-engine.js','./improvements.js','./dream-next-data.js','./dream-next.js','./offline.js','./deck-manifest.js'];
+const CORE=['./','./index.html','./deck.html','./i18n.js','./content-en.js','./followups-i18n.js','./language-switch.js','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./dreams.js','./dream-library.js','./dream-engine.js','./improvements.js','./dream-next-data.js','./dream-next.js','./offline.js','./deck-manifest.js'];
 const scope=new URL('./',self.location.href);
 const artPrefix=new URL(MYSTIC_DECK.base,scope).href;
 const coreURLs=new Set(CORE.map(path=>new URL(path,scope).href));

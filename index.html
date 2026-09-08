@@ -369,7 +369,7 @@ a{color:var(--gold)}
 /* =========================================================
    MysticNest — AppNest single-file app
    ========================================================= */
-const VERSION="2.5";
+const VERSION="2.6";
 const PREFIX="mystic_";
 
 /* ---------- storage shim ---------- */
@@ -1025,7 +1025,7 @@ function renderSpreadChips(){
     const s=SPREADS[k];
     const b=document.createElement('button');
     b.className='chip'+(state.spread===k?' sel':'');
-    b.textContent=state.lang==='he'?s.he:s.en;
+    b.textContent=spreadLabel(s);
     b.onclick=()=>{state.spread=k;renderSpreadChips();};
     c.appendChild(b);
   });
@@ -1130,7 +1130,7 @@ function crackCookie(){
 function showFortune(idx,nums,returning){
   const area=document.getElementById('cookieArea');
   area.innerHTML=`<div class="big">🥠</div>
-    <div class="fortune-msg">${FORTUNES[idx]}</div>
+    <div class="fortune-msg" dir="${contentDir()}" lang="${contentLang()}">${(contentLang()==='he'?FORTUNES:FORTUNES_EN)[idx]}</div>
     <div class="ssub" style="margin-top:16px">${T('luckyNums')}</div>
     <div class="fortune-lucky">${nums.map(n=>`<div class="n">${n}</div>`).join('')}</div>
     ${returning?`<p class="small" style="margin-top:16px">${T('comeTomorrow')}</p>`:''}`;
@@ -1269,9 +1269,9 @@ function clearAll(){
 
 /* ============ ABOUT actions ============ */
 function openStore(){window.open('https://barakaflalo.github.io/appnest','_blank');}
-function shareApp(){if(navigator.share){navigator.share({title:'MysticNest',text:'🔮 MysticNest — טארוט, פירוש חלומות ועוגיית מזל',url:location.href});}else{navigator.clipboard.writeText(location.href);toast(T('copied'));}}
+function shareApp(){if(navigator.share){navigator.share({title:'MysticNest',text:state.lang==='he'?'🔮 MysticNest — טארוט, פירוש חלומות ועוגיית מזל':'🔮 MysticNest — Tarot, dream readings and a daily fortune cookie',url:location.href});}else{navigator.clipboard.writeText(location.href);toast(T('copied'));}}
 function sendFeedback(){location.href='mailto:appnest55@gmail.com?subject=MysticNest%20Feedback';}
-function openPrivacy(){window.open('privacy_policy.html','_blank');}
+function openPrivacy(){window.open('privacy_policy.html?lang='+contentLang(),'_blank');}
 function showGuide(){
   const m=document.createElement('div');m.className='modal';m.onclick=(e)=>{if(e.target===m)m.remove();};
   m.innerHTML=`<div class="box"><h3>${T('guideTitle')}</h3><div class="bd" style="white-space:pre-wrap;font-size:14px;line-height:1.7">${T('guideBody')}</div><button class="btn ghost" onclick="this.closest('.modal').remove()" style="margin-top:16px">✓</button></div>`;
@@ -1307,18 +1307,23 @@ function init(){
   document.getElementById('aboutVer').textContent=(state.lang==='he'?'גרסה ':'v')+VERSION;
 }
 </script>
+<script src="i18n.js"></script>
+<script src="content-en.js"></script>
 <script src="deck-manifest.js"></script>
 <script src="card-details.js"></script>
 <script src="tarot.js"></script>
 <script src="dream-library.js"></script>
 <script src="dream-next-data.js"></script>
+<script src="followups-i18n.js"></script>
 <script src="dreams.js"></script>
 <script src="dream-engine.js"></script>
 <script src="improvements.js"></script>
 <script src="dream-next.js"></script>
 <script src="offline.js"></script>
+<script src="language-switch.js"></script>
 <script>
 init();
+restoreLanguageDraft();
 initDeckOffline();
 
 </script>

@@ -7,12 +7,12 @@ let swRegistration=null;
 function renderDeckStatus(){
   const label=document.getElementById('deckStatusText'),progress=document.getElementById('deckProgress'),button=document.getElementById('deckSave');if(!label)return;
   progress.max=deckState.total;progress.value=deckState.done;progress.hidden=deckState.ready||!deckState.supported;
-  if(!deckState.supported){label.textContent=deckText('שמירה ללא אינטרנט זמינה כשפותחים את האפליקציה דרך כתובת מאובטחת.','Offline saving is available when the app is opened from a secure web address.');button.hidden=true;return;}
-  if(!deckState.shellReady){label.textContent=deckState.error?deckText('לא ניתן להשלים כעת את שמירת האפליקציה. נסה לרענן כשיש חיבור.','The app could not be saved. Reload when connected.'):deckText('מכין את האפליקציה לשימוש ללא אינטרנט…','Preparing the app for offline use…');button.hidden=true;return;}
-  if(deckState.ready){label.textContent=AVAILABLE_IDS.length===78&&MYSTIC_DECK.hasBack!==false?deckText('כל 78 הקלפים נשמרו לשימוש ללא אינטרנט.','All 78 cards are saved for offline use.'):deckText('גרסת עבודה: '+AVAILABLE_IDS.length+' מתוך 78 איורים נשמרו. שאר האיורים עדיין בהכנה.','Work in progress: '+AVAILABLE_IDS.length+' of 78 illustrations saved. Remaining art is in progress.');button.hidden=true;return;}
-  if(deckState.busy){label.textContent=deckText('שומר את החפיסה במכשיר','Saving the deck on this device')+' · '+deckState.done+' / '+deckState.total;button.hidden=true;return;}
-  label.textContent=deckState.error?deckText('השמירה לא הושלמה. אפשר להמשיך כשיש חיבור ומקום פנוי במכשיר.','Saving is incomplete. Resume with a connection and available device storage.'):deckText('החפיסה מוכנה להורדה לשימוש ללא אינטרנט.','The deck is ready to download for offline use.');
-  button.hidden=false;button.textContent=deckText('המשך שמירת החפיסה','Save / resume deck');
+  if(!deckState.supported){label.textContent=deckText(U('שמירה ללא אינטרנט זמינה כשפותחים את האפליקציה דרך כתובת מאובטחת.'),'Offline saving is available when the app is opened from a secure web address.');button.hidden=true;return;}
+  if(!deckState.shellReady){label.textContent=deckState.error?deckText(U('לא ניתן להשלים כעת את שמירת האפליקציה. נסה לרענן כשיש חיבור.'),'The app could not be saved. Reload when connected.'):deckText(U('מכין את האפליקציה לשימוש ללא אינטרנט…'),'Preparing the app for offline use…');button.hidden=true;return;}
+  if(deckState.ready){label.textContent=AVAILABLE_IDS.length===78&&MYSTIC_DECK.hasBack!==false?deckText(U('כל 78 הקלפים נשמרו לשימוש ללא אינטרנט.'),'All 78 cards are saved for offline use.'):deckText(U('גרסת עבודה: ')+AVAILABLE_IDS.length+U(' מתוך 78 איורים נשמרו. שאר האיורים עדיין בהכנה.'),'Work in progress: '+AVAILABLE_IDS.length+' of 78 illustrations saved. Remaining art is in progress.');button.hidden=true;return;}
+  if(deckState.busy){label.textContent=deckText(U('שומר את החפיסה במכשיר'),'Saving the deck on this device')+' · '+deckState.done+' / '+deckState.total;button.hidden=true;return;}
+  label.textContent=deckState.error?deckText(U('השמירה לא הושלמה. אפשר להמשיך כשיש חיבור ומקום פנוי במכשיר.'),'Saving is incomplete. Resume with a connection and available device storage.'):deckText(U('החפיסה מוכנה להורדה לשימוש ללא אינטרנט.'),'The deck is ready to download for offline use.');
+  button.hidden=false;button.textContent=deckText(U('המשך שמירת החפיסה'),'Save / resume deck');
 }
 function isImageResponse(response){return !!response&&response.ok&&/^image\//i.test(response.headers.get('content-type')||'');}
 async function downloadDeck(){
@@ -54,7 +54,7 @@ async function checkDeck(){
 function offerAppUpdate(reg){
   if(!reg.waiting)return;
   const button=document.getElementById('appUpdate');button.hidden=false;
-  button.textContent=deckText('גרסה חדשה מוכנה — רענן','Update ready — reload');
+  button.textContent=deckText(U('גרסה חדשה מוכנה — רענן'),'Update ready — reload');
   button.onclick=()=>{
     let reloading=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!reloading){reloading=true;location.reload();}},{once:true});
     reg.waiting.postMessage({type:'ACTIVATE_UPDATE'});

@@ -105,9 +105,10 @@ function show(l){
   document.getElementById('en').classList.toggle('on',l==='en');
   document.getElementById('btn-he').classList.toggle('on',l==='he');
   document.getElementById('btn-en').classList.toggle('on',l==='en');
-  document.documentElement.lang=l;
+  document.documentElement.lang=l;document.title=l==='he'?'מדיניות פרטיות · MysticNest':'Privacy policy · MysticNest';
   document.documentElement.dir=(l==='he')?'rtl':'ltr';
 }
+if(new URLSearchParams(location.search).get('lang')==='en')show('en');
 </script>
 </body>
 </html>
