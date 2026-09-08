@@ -369,7 +369,7 @@ a{color:var(--gold)}
 /* =========================================================
    MysticNest — AppNest single-file app
    ========================================================= */
-const VERSION="2.4";
+const VERSION="2.5";
 const PREFIX="mystic_";
 
 /* ---------- storage shim ---------- */
@@ -1249,7 +1249,7 @@ function disconnectAI(){
 /* ============ DATA: export/import/clear ============ */
 function doExport(){
   const data={app:"MysticNest",version:VERSION,user:state.name,date:new Date().toISOString(),
-    history:DB.getJSON('history',[]),dreamJournal:DB.getJSON('dreamJournal',[]),dreamMeta:DB.getJSON('dreamMeta',{}),readingFeedback:DB.getJSON('readingFeedback',[]),fortune:DB.getJSON('fortune',null)};
+    history:DB.getJSON('history',[]),dreamJournal:DB.getJSON('dreamJournal',[]),dreamMeta:DB.getJSON('dreamMeta',{}),dreamAssociations:DB.getJSON('dreamAssociations',{}),readingFeedback:DB.getJSON('readingFeedback',[]),fortune:DB.getJSON('fortune',null)};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=`mysticnest_backup_${todayKey()}.json`;a.click();
@@ -1258,13 +1258,13 @@ function doExport(){
 function doImport(){document.getElementById('importFile').click();}
 function importFile(e){
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{const d=JSON.parse(r.result);if(d.history)DB.setJSON('history',d.history);if(Array.isArray(d.dreamJournal)){DB.setJSON('dreamJournal',d.dreamJournal.filter(x=>x&&typeof x.txt==='string'&&typeof x.journalId==='string').slice(0,50));renderDreamJournal();}if(d.dreamMeta&&typeof d.dreamMeta==='object'&&!Array.isArray(d.dreamMeta)){const cleaned={};for(const [k,v] of Object.entries(d.dreamMeta)){if(v&&typeof v==='object')cleaned[k]={favorite:!!v.favorite,tags:Array.isArray(v.tags)?v.tags.filter(t=>typeof t==='string').map(t=>t.slice(0,80)).slice(0,8):[]};}DB.setJSON('dreamMeta',cleaned);}if(Array.isArray(d.readingFeedback))DB.setJSON('readingFeedback',d.readingFeedback.filter(x=>x&&typeof x.key==='string'&&typeof x.note==='string').slice(0,200));renderDreamJournal();if(d.fortune)DB.setJSON('fortune',d.fortune);if(d.user){state.name=d.user;DB.set('name',d.user);}renderSettings();toast(T('importOk'));}catch(err){toast(T('importErr'));}};
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(d.history)DB.setJSON('history',d.history);if(Array.isArray(d.dreamJournal)){DB.setJSON('dreamJournal',d.dreamJournal.filter(x=>x&&typeof x.txt==='string'&&typeof x.journalId==='string').slice(0,50));renderDreamJournal();}if(d.dreamAssociations&&typeof d.dreamAssociations==='object'&&!Array.isArray(d.dreamAssociations)){const clean=Object.create(null);for(const [key,v] of Object.entries(d.dreamAssociations)){if(dreamCatalog().some(r=>r.id===key)&&v&&['safe','uncomfortable','memory','new'].includes(v.significance))clean[key]={significance:v.significance,note:typeof v.note==='string'?v.note.slice(0,1500):''};}DB.setJSON('dreamAssociations',clean);renderAssociations();}if(d.dreamMeta&&typeof d.dreamMeta==='object'&&!Array.isArray(d.dreamMeta)){const cleaned={};for(const [k,v] of Object.entries(d.dreamMeta)){if(v&&typeof v==='object')cleaned[k]={favorite:!!v.favorite,tags:Array.isArray(v.tags)?v.tags.filter(t=>typeof t==='string').map(t=>t.slice(0,80)).slice(0,8):[]};}DB.setJSON('dreamMeta',cleaned);}if(Array.isArray(d.readingFeedback))DB.setJSON('readingFeedback',d.readingFeedback.filter(x=>x&&typeof x.key==='string'&&typeof x.note==='string').slice(0,200));renderDreamJournal();if(d.fortune)DB.setJSON('fortune',d.fortune);if(d.user){state.name=d.user;DB.set('name',d.user);}renderSettings();toast(T('importOk'));}catch(err){toast(T('importErr'));}};
   r.readAsText(f);
 }
 function clearAll(){
   if(!confirm(T('confirmClear')))return;
-  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback'].forEach(k=>DB.del(k));
-  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();updateAiDot();renderSettings();toast(T('cleared'));
+  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback','dreamAssociations'].forEach(k=>DB.del(k));
+  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();renderAssociations();updateAiDot();renderSettings();toast(T('cleared'));
 }
 
 /* ============ ABOUT actions ============ */
@@ -1311,9 +1311,11 @@ function init(){
 <script src="card-details.js"></script>
 <script src="tarot.js"></script>
 <script src="dream-library.js"></script>
+<script src="dream-next-data.js"></script>
 <script src="dreams.js"></script>
 <script src="dream-engine.js"></script>
 <script src="improvements.js"></script>
+<script src="dream-next.js"></script>
 <script src="offline.js"></script>
 <script>
 init();

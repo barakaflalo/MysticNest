@@ -66,7 +66,8 @@ function setupDreams(){
 function interpretDream(){
  const txt=document.getElementById('dreamText').value.trim();if(!txt){shake('dreamText');return;}
  const old=currentDream;const id=((old?.txt===txt||old?.editing)?old.journalId:null)||('dream-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
- currentDream={txt,editing:old?.editing||false,personal:{focus:document.getElementById('dreamFocus').value,significance:document.getElementById('dreamSignificance').value,note:document.getElementById('dreamPersonal').value.trim()},emotion:document.getElementById('dreamEmotion').value,ending:document.getElementById('dreamEnding').value,excluded:old?.txt===txt?old.excluded||[]:[],journalId:id};
+ if(old&&old.txt!==txt&&!old.editing&&document.getElementById('dreamFocus').value===(old.personal?.focus||'')&&document.getElementById('dreamSignificance').value===(old.personal?.significance||'')&&document.getElementById('dreamPersonal').value.trim()===(old.personal?.note||'')){for(const key of ['dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(key).value='';}
+ currentDream={txt,editing:old?.editing||false,personal:{answers:old?.txt===txt?old.personal?.answers||{}:{},focus:document.getElementById('dreamFocus').value,significance:document.getElementById('dreamSignificance').value,note:document.getElementById('dreamPersonal').value.trim()},emotion:document.getElementById('dreamEmotion').value,ending:document.getElementById('dreamEnding').value,excluded:old?.txt===txt?old.excluded||[]:[],journalId:id};
  renderLocalDream();persistDream();
 }
 function renderLocalDream(){
@@ -79,7 +80,7 @@ function renderLocalDream(){
  box.append(dreamEl('p','הקריאה מבוססת על הפרטים שזוהו ועל מה שבחרת לשתף. היא מציעה אפשרויות, לא משמעות מוכחת או תחזית.','small'));res.append(box);
  for(const c of a.connections||[]){const connection=dreamEl('details',null,'reading');connection.append(dreamEl('summary','חיבור אפשרי: '+c.title),dreamEl('p',c.meaning),dreamEl('p',c.question));res.append(connection);}
  for(const s of a.found){const detail=dreamEl('details',null,'reading dream-symbol');detail.append(dreamEl('summary',s.name),dreamEl('p','זוהה לפי: '+s.evidence.join(' · '),'small'),dreamEl('p',s.meaning||('ל־'+s.name+' יכולות להיות אסוציאציות שונות. אפשר לבדוק מה היה תפקידו בסיפור ומה הוא מזכיר לך, לצד האפשרות שזהו פרט מחוויה יומיומית.')),dreamEl('p',s.question||'האם הפרט היה מוכר, נעים או מטריד? מה קרה סביבו?'));
- const remove=dreamEl('button','זה לא הופיע בחלום','btn ghost');remove.type='button';remove.onclick=()=>{d.excluded.push(s.id);renderLocalDream();persistDream();};detail.append(remove);res.append(detail);}
+ const remove=dreamEl('button','זה לא הופיע בחלום','btn ghost');remove.type='button';remove.onclick=()=>{d.excluded.push(s.id);if(d.personal?.answers)for(const k of Object.keys(d.personal.answers))if(d.personal.answers[k]===s.id)delete d.personal.answers[k];renderLocalDream();persistDream();};detail.append(remove);res.append(detail);}
  if(d.excluded.length){const undo=dreamEl('button','איפוס תיקוני הזיהוי','btn ghost');undo.onclick=()=>{d.excluded=[];renderLocalDream();persistDream();};res.append(undo);}
  if(AI.provider&&AI.key){const btn=dreamEl('button','✨ העמקה אישית עם בינה','btn ghost');btn.id='deepDreamBtn';btn.onclick=deepenDream;const ai=dreamEl('div');ai.id='aiDream';res.append(btn,ai);}
 }

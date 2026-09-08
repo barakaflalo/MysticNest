@@ -29,6 +29,7 @@ function dreamCatalog(){
 }
 function analyzeLocalDream(txt,emotion='',ending='',excluded=[],personal={}){
  const denied=new Set(excluded);const matched=dreamCatalog().map(r=>{const matches=dreamFind(txt,r.keys);return {...r,matches,evidence:[...new Set(matches.map(m=>m.text))]};}).filter(r=>r.matches.length&&!denied.has(r.id));
+ if(typeof applyDreamAnswers==='function')applyDreamAnswers(matched,personal,excluded);
  const ids=new Set(matched.map(r=>r.id));
  const combos=DREAM_EXPANSION.combinations.filter(c=>c.ids.every(id=>ids.has(id))).filter(c=>{
   const a=matched.find(r=>r.id===c.ids[0]),b=matched.find(r=>r.id===c.ids[1]);return a.matches.some(x=>b.matches.some(y=>Math.abs(x.clause-y.clause)<=1&&Math.abs(x.at-y.at)<=35));
