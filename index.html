@@ -253,6 +253,7 @@ a{color:var(--gold)}
     </button>
   </div>
   <div id="backupReminder"></div>
+  <div id="cardOfDay"></div>
   <div class="disc" id="homeDisc">✨ לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ מקצועי.</div>
 </div>
 
@@ -309,10 +310,8 @@ a{color:var(--gold)}
 
   <div class="chips" id="palmModeChips"></div>
 
-  <!-- GUIDE MODE -->
   <div id="palmGuide"></div>
 
-  <!-- PHOTO/AI MODE -->
   <div id="palmPhoto" class="hidden">
     <div id="palmDrop" class="palm-drop">
       <div class="palm-ic">🖐️</div>
@@ -403,7 +402,7 @@ a{color:var(--gold)}
 /* =========================================================
    MysticNest — AppNest single-file app
    ========================================================= */
-const VERSION="2.3";
+const VERSION="2.6";
 const PREFIX="mystic_";
 
 /* ---------- storage shim ---------- */
@@ -857,10 +856,12 @@ const LANG={
   fortuneH:"🥠 עוגיית המזל היומית", fortuneSub:"מסר אחד ליום. חזור מחר למסר חדש.",
   tapCookie:"הקש על העוגייה", luckyNums:"מספרי המזל שלך",
   comeTomorrow:"חזרת! העוגייה של היום כבר נפתחה. מסר חדש יחכה לך מחר. 🌙",
+  cardOfDayTitle:"קלף היום",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
   palmGuideIntro:"הקש על קו בכף היד או ברשימה כדי לקרוא את משמעותו המסורתית.",
+  palmShapesTitle:"צורת כף היד (יסודות)", palmMountsTitle:"הגבעות (מאונטיינים)",
   palmCamT:"מצלמה", palmGalT:"גלריה",
   palmHint:"צלם או בחר תמונה של כף היד הפתוחה, באור טוב, כשהאצבעות פרושות.",
   palmReadBtn:"✨ קרא את כף ידי עם הבינה", palmReading:"קורא את כף היד...",
@@ -915,10 +916,12 @@ const LANG={
   fortuneH:"🥠 Daily Fortune Cookie", fortuneSub:"One message a day. Come back tomorrow.",
   tapCookie:"Tap the cookie", luckyNums:"Your lucky numbers",
   comeTomorrow:"Welcome back! Today's cookie is already open. A new message awaits tomorrow. 🌙",
+  cardOfDayTitle:"Card of the day",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
   palmGuideIntro:"Tap a line on the palm or in the list to read its traditional meaning.",
+  palmShapesTitle:"Hand shape (elements)", palmMountsTitle:"The mounts",
   palmCamT:"Camera", palmGalT:"Gallery",
   palmHint:"Take or choose a photo of your open palm, in good light, fingers spread.",
   palmReadBtn:"✨ Read my palm with AI", palmReading:"Reading the palm...",
@@ -1043,8 +1046,9 @@ function go(s){
   const el=document.getElementById('s-'+s); if(el)el.classList.remove('hidden');
   window.scrollTo(0,0);
   if(s==='fortune')renderFortune();
-  if(s==='settings')renderSettings();
   if(s==='palm')renderPalm();
+  if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
+  if(s==='settings')renderSettings();
 }
 
 /* ============ RENDER: shell / i18n ============ */
@@ -1096,7 +1100,7 @@ function renderSpreadChips(){
     const s=SPREADS[k];
     const b=document.createElement('button');
     b.className='chip'+(state.spread===k?' sel':'');
-    b.textContent=state.lang==='he'?s.he:s.en;
+    b.textContent=spreadLabel(s);
     b.onclick=()=>{state.spread=k;renderSpreadChips();};
     c.appendChild(b);
   });
@@ -1201,7 +1205,7 @@ function crackCookie(){
 function showFortune(idx,nums,returning){
   const area=document.getElementById('cookieArea');
   area.innerHTML=`<div class="big">🥠</div>
-    <div class="fortune-msg">${FORTUNES[idx]}</div>
+    <div class="fortune-msg" dir="${contentDir()}" lang="${contentLang()}">${(contentLang()==='he'?FORTUNES:FORTUNES_EN)[idx]}</div>
     <div class="ssub" style="margin-top:16px">${T('luckyNums')}</div>
     <div class="fortune-lucky">${nums.map(n=>`<div class="n">${n}</div>`).join('')}</div>
     ${returning?`<p class="small" style="margin-top:16px">${T('comeTomorrow')}</p>`:''}`;
@@ -1320,7 +1324,7 @@ function disconnectAI(){
 /* ============ DATA: export/import/clear ============ */
 function doExport(){
   const data={app:"MysticNest",version:VERSION,user:state.name,date:new Date().toISOString(),
-    history:DB.getJSON('history',[]),dreamJournal:DB.getJSON('dreamJournal',[]),fortune:DB.getJSON('fortune',null)};
+    history:DB.getJSON('history',[]),dreamJournal:DB.getJSON('dreamJournal',[]),dreamMeta:DB.getJSON('dreamMeta',{}),dreamAssociations:DB.getJSON('dreamAssociations',{}),readingFeedback:DB.getJSON('readingFeedback',[]),fortune:DB.getJSON('fortune',null)};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download=`mysticnest_backup_${todayKey()}.json`;a.click();
@@ -1329,20 +1333,24 @@ function doExport(){
 function doImport(){document.getElementById('importFile').click();}
 function importFile(e){
   const f=e.target.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{try{const d=JSON.parse(r.result);if(d.history)DB.setJSON('history',d.history);if(Array.isArray(d.dreamJournal)){DB.setJSON('dreamJournal',d.dreamJournal.filter(x=>x&&typeof x.txt==='string'&&typeof x.journalId==='string').slice(0,50));renderDreamJournal();}if(d.fortune)DB.setJSON('fortune',d.fortune);if(d.user){state.name=d.user;DB.set('name',d.user);}renderSettings();toast(T('importOk'));}catch(err){toast(T('importErr'));}};
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(d.history)DB.setJSON('history',d.history);if(Array.isArray(d.dreamJournal)){DB.setJSON('dreamJournal',d.dreamJournal.filter(x=>x&&typeof x.txt==='string'&&typeof x.journalId==='string').slice(0,50));renderDreamJournal();}if(d.dreamAssociations&&typeof d.dreamAssociations==='object'&&!Array.isArray(d.dreamAssociations)){const clean=Object.create(null);for(const [key,v] of Object.entries(d.dreamAssociations)){if(dreamCatalog().some(r=>r.id===key)&&v&&['safe','uncomfortable','memory','new'].includes(v.significance))clean[key]={significance:v.significance,note:typeof v.note==='string'?v.note.slice(0,1500):''};}DB.setJSON('dreamAssociations',clean);renderAssociations();}if(d.dreamMeta&&typeof d.dreamMeta==='object'&&!Array.isArray(d.dreamMeta)){const cleaned={};for(const [k,v] of Object.entries(d.dreamMeta)){if(v&&typeof v==='object')cleaned[k]={favorite:!!v.favorite,tags:Array.isArray(v.tags)?v.tags.filter(t=>typeof t==='string').map(t=>t.slice(0,80)).slice(0,8):[]};}DB.setJSON('dreamMeta',cleaned);}if(Array.isArray(d.readingFeedback))DB.setJSON('readingFeedback',d.readingFeedback.filter(x=>x&&typeof x.key==='string'&&typeof x.note==='string').slice(0,200));renderDreamJournal();if(d.fortune)DB.setJSON('fortune',d.fortune);if(d.user){state.name=d.user;DB.set('name',d.user);}renderSettings();toast(T('importOk'));}catch(err){toast(T('importErr'));}};
   r.readAsText(f);
 }
 function clearAll(){
   if(!confirm(T('confirmClear')))return;
-  ['history','fortune','ai','dreamJournal'].forEach(k=>DB.del(k));
-  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();updateAiDot();renderSettings();toast(T('cleared'));
+  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback','dreamAssociations','cardOfDay','name','pal','light'].forEach(k=>DB.del(k));
+  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();
+  state.name='';state.pal='gold';state.light=false;applyTheme();
+  renderDreamJournal();renderAssociations();updateAiDot();renderSettings();
+  if(typeof renderCardOfDay==='function')renderCardOfDay();
+  toast(T('cleared'));
 }
 
 /* ============ ABOUT actions ============ */
 function openStore(){window.open('https://barakaflalo.github.io/appnest','_blank');}
-function shareApp(){if(navigator.share){navigator.share({title:'MysticNest',text:'🔮 MysticNest — טארוט, פירוש חלומות ועוגיית מזל',url:location.href});}else{navigator.clipboard.writeText(location.href);toast(T('copied'));}}
+function shareApp(){if(navigator.share){navigator.share({title:'MysticNest',text:state.lang==='he'?'🔮 MysticNest — טארוט, פירוש חלומות ועוגיית מזל':'🔮 MysticNest — Tarot, dream readings and a daily fortune cookie',url:location.href});}else{navigator.clipboard.writeText(location.href);toast(T('copied'));}}
 function sendFeedback(){location.href='mailto:appnest55@gmail.com?subject=MysticNest%20Feedback';}
-function openPrivacy(){window.open('privacy_policy.html','_blank');}
+function openPrivacy(){window.open('privacy_policy.html?lang='+contentLang(),'_blank');}
 function showGuide(){
   const m=document.createElement('div');m.className='modal';m.onclick=(e)=>{if(e.target===m)m.remove();};
   m.innerHTML=`<div class="box"><h3>${T('guideTitle')}</h3><div class="bd" style="white-space:pre-wrap;font-size:14px;line-height:1.7">${T('guideBody')}</div><button class="btn ghost" onclick="this.closest('.modal').remove()" style="margin-top:16px">✓</button></div>`;
@@ -1370,6 +1378,34 @@ function checkBackupNudge(){
 }
 
 /* ============ INIT ============ */
+/* ============ CARD OF THE DAY ============ */
+function renderCardOfDay(){
+  const box=document.getElementById('cardOfDay'); if(!box)return;
+  const key=todayKey();
+  let saved=DB.getJSON('cardOfDay',null);
+  if(!saved||saved.day!==key){
+    const deck=[...TAROT_MAJOR,...TAROT_MINOR];
+    const card=deck[Math.floor(Math.random()*deck.length)];
+    saved={day:key,id:card.id,rev:Math.random()<0.3};
+    DB.setJSON('cardOfDay',saved);
+  }
+  const card=[...TAROT_MAJOR,...TAROT_MINOR].find(c=>c.id===saved.id);
+  if(!card){box.innerHTML='';return;}
+  const pick={card,rev:saved.rev};
+  const name=(typeof cardName==='function')?cardName(card):card.he;
+  const short=(typeof cardShort==='function')?cardShort(pick):(saved.rev?card.rev:card.up);
+  const orient=saved.rev?U('הפוך'):U('ישר');
+  const img=(typeof cardImagePath==='function')?cardImagePath(card.id):('assets/tarot/gold-v1/card-'+card.id+'.jpg');
+  box.innerHTML=`<div class="cod-card" onclick="go('tarot')" role="button" tabindex="0">
+    <div class="cod-h">🎴 ${T('cardOfDayTitle')}</div>
+    <div class="cod-body">
+      <img class="cod-img${saved.rev?' rev':''}" src="${esc(img)}" alt="${esc(name)}" onerror="this.style.display='none'">
+      <div class="cod-txt"><b>${esc(name)}</b><span class="cod-or">${orient}</span><p>${esc(short)}</p></div>
+    </div></div>`;
+  const c=box.querySelector('.cod-card');
+  if(c)c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go('tarot');}});
+}
+
 function init(){
   if(!DB.get('firstUse'))DB.set('firstUse',Date.now());
   applyTheme();applyLang();stars();updateAiDot();
@@ -1378,16 +1414,25 @@ function init(){
   document.getElementById('aboutVer').textContent=(state.lang==='he'?'גרסה ':'v')+VERSION;
 }
 </script>
+<script src="i18n.js"></script>
+<script src="content-en.js"></script>
 <script src="deck-manifest.js"></script>
 <script src="card-details.js"></script>
 <script src="tarot.js"></script>
 <script src="dream-library.js"></script>
+<script src="dream-next-data.js"></script>
+<script src="followups-i18n.js"></script>
 <script src="dreams.js"></script>
 <script src="dream-engine.js"></script>
+<script src="improvements.js"></script>
+<script src="dream-next.js"></script>
 <script src="offline.js"></script>
 <script src="palm.js"></script>
+<script src="language-switch.js"></script>
 <script>
 init();
+try{renderCardOfDay();}catch(e){}
+restoreLanguageDraft();
 initDeckOffline();
 
 </script>
