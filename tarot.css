@@ -44,10 +44,14 @@ body:has(.card-zoom[open]){overflow:hidden}
 
 .dream-personal summary,.dream-library summary{cursor:pointer;color:var(--gold);padding:12px 0}.dream-personal{margin:12px 0 20px}.dream-library details{border-top:1px solid var(--line)}.dream-personal-note{padding:12px;border-inline-start:3px solid var(--gold);background:var(--bg)}
 
-.card-library>summary,.reading-feedback>summary{cursor:pointer;color:var(--gold);padding:12px 0}.library-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.library-card{border:1px solid var(--line);border-radius:10px;padding:6px;background:var(--bg);color:var(--txt);cursor:pointer}.library-card img{width:100%;height:auto;aspect-ratio:2/3;object-fit:contain;display:block;border-radius:7px}.library-card span{display:block;margin-top:7px}.library-card:focus-visible{outline:3px solid var(--gold)}.position-reading{border-inline-start:3px solid var(--gold);padding-inline-start:14px;margin:20px 0}.position-reading h3{color:var(--gold)}.position-hint{font-size:14px;line-height:1.7;margin-top:12px;color:var(--dim)}.feedback-options{display:flex;flex-wrap:wrap;gap:8px}.feedback-options button{flex:1;min-width:100px}.feedback-options button[aria-pressed=true]{border-color:var(--gold);background:var(--bg2);color:var(--gold)}.reading-feedback{margin-top:20px}.journal-tools{padding:12px 0}.journal-tools label{display:block;margin:12px 0}.dream-entry[hidden]{display:none!important}@media(max-width:500px){.library-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.library-card span{font-size:13px}}
-
-/* UI follows the selected language; readings and user text retain their own direction. */
-html[lang="ar"] .lbl,html[lang="ar"] .btn,html[lang="ar"] summary,html[lang="ar"] h3{direction:rtl;text-align:right}
-html[lang="ar"] select{direction:rtl}
-html[lang="ar"] .zoom-copy p,html[lang="ar"] .dream-library details p,html[lang="ar"] .position-hint{direction:ltr;text-align:left}
-.dream-entry p,.dream-personal-note,textarea{unicode-bidi:plaintext}
+/* ===== Palm reading module ===== */
+.palm-drop{background:var(--card,#17171e);border:1px dashed var(--line,#2a2a35);border-radius:16px;padding:22px 16px;text-align:center}
+.palm-drop .palm-ic{font-size:44px;filter:drop-shadow(0 0 12px var(--gold,#d4af37))}
+.palm-preview-img{width:100%;max-height:340px;object-fit:contain;border-radius:14px;border:1px solid var(--line,#2a2a35);margin-top:14px;background:#000}
+.palm-line-card{background:var(--card,#17171e);border:1px solid var(--line,#2a2a35);border-radius:14px;padding:14px;margin-bottom:10px}
+.palm-line-card .h{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--gold,#d4af37);font-size:16px}
+.palm-line-card .h .dotc{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.palm-line-card .m{font-size:14px;margin-top:6px}
+.palm-diagram{width:100%;max-width:320px;margin:8px auto 4px;display:block}
+.palm-diagram path.pl{fill:none;stroke-width:5;stroke-linecap:round;cursor:pointer;transition:.15s;opacity:.85}
+.palm-diagram path.pl:hover,.palm-diagram path.pl.act{opacity:1;stroke-width:7}
