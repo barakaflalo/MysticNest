@@ -256,6 +256,11 @@ a{color:var(--gold)}
       <div class="tx"><h3 id="tNum">נומרולוגיה</h3><p id="tNumD">מספרי החיים שלך לפי שם ותאריך לידה</p></div>
       <div class="arr">‹</div>
     </button>
+    <button class="tile" onclick="go('horo')">
+      <div class="ic">♈</div>
+      <div class="tx"><h3 id="tHoro">הורוסקופ ומזלות</h3><p id="tHoroD">אישיות המזל שלך וקריאה יומית</p></div>
+      <div class="arr">‹</div>
+    </button>
   </div>
   <div id="backupReminder"></div>
   <div id="cardOfDay"></div>
@@ -332,6 +337,15 @@ a{color:var(--gold)}
     <div id="palmResult"></div>
     <div class="small" id="palmPrivacy" style="margin-top:14px;color:var(--dim)"></div>
   </div>
+</div>
+
+<!-- HOROSCOPE -->
+<div class="screen hidden" id="s-horo">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="horoH">♈ הורוסקופ ומזלות</h2>
+  <p class="ssub" id="horoSub">בחר את המזל שלך.</p>
+  <div class="zgrid" id="horoGrid"></div>
+  <div id="horoResult"></div>
 </div>
 
 <!-- NUMEROLOGY -->
@@ -885,6 +899,11 @@ const LANG={
   numLifePath:"מספר נתיב החיים", numExpression:"מספר הביטוי (השם)",
   numDeepen:"✨ העמק עם הבינה", numReading:"קורא את המספרים...", numYourReading:"הקריאה שלך",
   numDisc:"לבידור והשראה בלבד — נומרולוגיה אינה מדע ואינה ניבוי עתיד.",
+  tHoro:"הורוסקופ ומזלות", tHoroD:"אישיות המזל שלך וקריאה יומית",
+  horoH:"♈ הורוסקופ ומזלות", horoSub:"בחר את המזל שלך.",
+  horoDaily:"✨ הורוסקופ יומי עם הבינה", horoReading:"קורא את הכוכבים...", horoToday:"ההורוסקופ שלך להיום",
+  horoDisc:"לבידור והשראה בלבד — אסטרולוגיה אינה מדע ואינה ניבוי עתיד.",
+  horoEl_fire:"אש", horoEl_earth:"אדמה", horoEl_air:"אוויר", horoEl_water:"מים",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
@@ -952,6 +971,11 @@ const LANG={
   numLifePath:"Life Path number", numExpression:"Expression number (name)",
   numDeepen:"✨ Deepen with AI", numReading:"Reading the numbers...", numYourReading:"Your reading",
   numDisc:"For entertainment and inspiration only — numerology is not science or fortune-telling.",
+  tHoro:"Horoscope & Zodiac", tHoroD:"Your sign's personality and a daily reading",
+  horoH:"♈ Horoscope & Zodiac", horoSub:"Choose your sign.",
+  horoDaily:"✨ Daily horoscope with AI", horoReading:"Reading the stars...", horoToday:"Your horoscope for today",
+  horoDisc:"For entertainment and inspiration only — astrology is not science or fortune-telling.",
+  horoEl_fire:"Fire", horoEl_earth:"Earth", horoEl_air:"Air", horoEl_water:"Water",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
@@ -1083,6 +1107,7 @@ function go(s){
   if(s==='fortune')renderFortune();
   if(s==='palm')renderPalm();
   if(s==='num'&&typeof renderNumerology==='function')renderNumerology();
+  if(s==='horo'&&typeof renderHoroscope==='function')renderHoroscope();
   if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
   if(s==='settings')renderSettings();
 }
@@ -1101,6 +1126,7 @@ function applyLang(){
   set('tFortune',T('tFortune')); set('tFortuneD',T('tFortuneD'));
   set('tPalm',T('tPalm')); set('tPalmD',T('tPalmD'));
   set('tNum',T('tNum')); set('tNumD',T('tNumD'));
+  set('tHoro',T('tHoro')); set('tHoroD',T('tHoroD'));
   set('palmH',T('palmH')); set('palmSub',T('palmSub'));
   set('homeDisc',T('homeDisc'));
   set('back1',T('back'));
@@ -1466,6 +1492,7 @@ function init(){
 <script src="offline.js"></script>
 <script src="palm.js"></script>
 <script src="numerology.js"></script>
+<script src="horoscope.js"></script>
 <script src="language-switch.js"></script>
 <script>
 init();
