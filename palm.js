@@ -6,36 +6,6 @@
    Entertainment & inspiration only.
    ============================================================ */
 
-/* ---- offline: hand shapes (elements) ---- */
-const PALM_SHAPES=[
-  { id:"fire", he:"יד האש", en:"Fire hand", icon:"🔥",
-    meaning:"כף יד מלבנית (ארוכה) עם אצבעות קצרות. נקשרת למרץ, ספונטניות, ביטחון ותשוקה לפעולה. בעלי 'יד אש' נוטים להתלהב מהר ולהוביל, ולעיתים להתקשות בסבלנות לפרטים." },
-  { id:"earth", he:"יד האדמה", en:"Earth hand", icon:"🌍",
-    meaning:"כף יד ריבועית עם אצבעות קצרות וקווים ברורים ומעטים. נקשרת ליציבות, מעשיות, אמינות וחיבור לטבע ולגוף. בעלי 'יד אדמה' מוערכים על שיקול דעת ורגליים על הקרקע." },
-  { id:"air", he:"יד האוויר", en:"Air hand", icon:"💨",
-    meaning:"כף יד ריבועית עם אצבעות ארוכות ורשת קווים עשירה. נקשרת לחשיבה, סקרנות, תקשורת וצורך בגירוי אינטלקטואלי. בעלי 'יד אוויר' נהנים מרעיונות, שיחה וניתוח." },
-  { id:"water", he:"יד המים", en:"Water hand", icon:"💧",
-    meaning:"כף יד מלבנית (ארוכה) עם אצבעות ארוכות וקווים דקים ורבים. נקשרת לרגישות, אינטואיציה, יצירתיות ועומק רגשי. בעלי 'יד מים' קולטים אווירה בעדינות ומושפעים מסביבתם." },
-];
-
-/* ---- offline: mounts (gvaot) ---- */
-const PALM_MOUNTS=[
-  { id:"jupiter", he:"גבעת צדק (יופיטר)", en:"Mount of Jupiter",
-    meaning:"מתחת לאצבע המורה. קשורה לשאפתנות, מנהיגות, ביטחון עצמי וגאווה בריאה. גבעה מלאה מרמזת על רצון להוביל ולהשפיע." },
-  { id:"saturn", he:"גבעת שבתאי (סטורן)", en:"Mount of Saturn",
-    meaning:"מתחת לאצבע האמצעית. קשורה לאחריות, משמעת, חוכמה והתבוננות. גבעה בולטת מרמזת על רצינות ונטייה למחשבה מעמיקה." },
-  { id:"apollo", he:"גבעת השמש (אפולו)", en:"Mount of Apollo",
-    meaning:"מתחת לאצבע הקמיצה. קשורה ליצירתיות, ביטוי עצמי, כריזמה והנאה מיופי. גבעה מלאה מרמזת על כישרון אמנותי ואופטימיות." },
-  { id:"mercury", he:"גבעת מרקורי", en:"Mount of Mercury",
-    meaning:"מתחת לאצבע הזרת. קשורה לתקשורת, שנינות, מסחר וקשרים. גבעה בולטת מרמזת על כושר ביטוי ויכולת לשכנע ולהתחבר." },
-  { id:"venus", he:"גבעת ונוס", en:"Mount of Venus",
-    meaning:"הבסיס הרך שסביב האגודל. קשורה לאהבה, חום, חיוניות ותשוקת חיים. גבעה מלאה מרמזת על אנרגיה, נדיבות ויכולת ליהנות." },
-  { id:"mars", he:"גבעות מאדים", en:"Mounts of Mars",
-    meaning:"שני אזורים (עליון ותחתון) בצדי כף היד. קשורים לאומץ, נחישות ועמידות מול קושי. מרמזים על היכולת לעמוד על שלך ולהתמיד." },
-  { id:"moon", he:"גבעת הירח (לונה)", en:"Mount of the Moon",
-    meaning:"בבסיס כף היד בצד הזרת. קשורה לדמיון, אינטואיציה, חלומות ורגש. גבעה מלאה מרמזת על עולם פנימי עשיר ויצירתי." },
-];
-
 /* ---- offline line database (original Hebrew phrasings) ---- */
 const PALM_LINES=[
   { id:"heart", color:"#e0567a",
@@ -98,16 +68,6 @@ function renderPalmGuide(){
     html+=`<div class="palm-line-card" id="pl-${l.id}">
       <div class="h"><span class="dotc" style="background:${l.color}"></span>${state.lang==='he'?l.he:l.en}</div>
       <div class="m">${l.meaning}</div></div>`;
-  });
-  // hand shapes
-  html+=`<div class="palm-section-title">${T('palmShapesTitle')}</div>`;
-  PALM_SHAPES.forEach(s=>{
-    html+=`<div class="palm-line-card"><div class="h">${s.icon} ${state.lang==='he'?s.he:s.en}</div><div class="m">${s.meaning}</div></div>`;
-  });
-  // mounts
-  html+=`<div class="palm-section-title">${T('palmMountsTitle')}</div>`;
-  PALM_MOUNTS.forEach(m=>{
-    html+=`<div class="palm-line-card"><div class="h">✦ ${state.lang==='he'?m.he:m.en}</div><div class="m">${m.meaning}</div></div>`;
   });
   html+=`</div><div class="disc" style="margin-top:12px">${T('palmDisc')}</div>`;
   box.innerHTML=html;

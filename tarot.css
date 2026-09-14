@@ -63,18 +63,3 @@ html[lang="ar"] .zoom-copy p,html[lang="ar"] .dream-library details p,html[lang=
 .palm-diagram{width:100%;max-width:320px;margin:8px auto 4px;display:block}
 .palm-diagram path.pl{fill:none;stroke-width:5;stroke-linecap:round;cursor:pointer;transition:.15s;opacity:.85}
 .palm-diagram path.pl:hover,.palm-diagram path.pl.act{opacity:1;stroke-width:7}
-
-/* ===== Card of the day ===== */
-.cod-card{background:linear-gradient(160deg,var(--bg2,#15151b),var(--card,#17171e));border:1px solid var(--gold,#d4af37);border-radius:16px;padding:14px;margin-top:16px;cursor:pointer;transition:.15s}
-.cod-card:active{transform:scale(.99)}
-.cod-h{font-weight:800;color:var(--gold,#d4af37);font-size:14px;margin-bottom:10px}
-.cod-body{display:flex;gap:14px;align-items:center}
-.cod-img{width:74px;height:111px;object-fit:cover;border-radius:10px;border:1px solid var(--line,#2a2a35);flex-shrink:0}
-.cod-img.rev{transform:rotate(180deg)}
-.cod-txt{flex:1;min-width:0}
-.cod-txt b{color:var(--gold,#d4af37);font-size:16px;display:block}
-.cod-txt .cod-or{font-size:11px;color:var(--dim,#9a927e);display:block;margin-bottom:4px}
-.cod-txt p{font-size:13px;margin:0}
-
-/* ===== Palm: hand shapes & mounts ===== */
-.palm-section-title{font-weight:800;color:var(--gold,#d4af37);font-size:15px;margin:20px 0 8px}

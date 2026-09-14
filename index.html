@@ -253,7 +253,6 @@ a{color:var(--gold)}
     </button>
   </div>
   <div id="backupReminder"></div>
-  <div id="cardOfDay"></div>
   <div class="disc" id="homeDisc">✨ לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ מקצועי.</div>
 </div>
 
@@ -856,12 +855,10 @@ const LANG={
   fortuneH:"🥠 עוגיית המזל היומית", fortuneSub:"מסר אחד ליום. חזור מחר למסר חדש.",
   tapCookie:"הקש על העוגייה", luckyNums:"מספרי המזל שלך",
   comeTomorrow:"חזרת! העוגייה של היום כבר נפתחה. מסר חדש יחכה לך מחר. 🌙",
-  cardOfDayTitle:"קלף היום",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
   palmGuideIntro:"הקש על קו בכף היד או ברשימה כדי לקרוא את משמעותו המסורתית.",
-  palmShapesTitle:"צורת כף היד (יסודות)", palmMountsTitle:"הגבעות (מאונטיינים)",
   palmCamT:"מצלמה", palmGalT:"גלריה",
   palmHint:"צלם או בחר תמונה של כף היד הפתוחה, באור טוב, כשהאצבעות פרושות.",
   palmReadBtn:"✨ קרא את כף ידי עם הבינה", palmReading:"קורא את כף היד...",
@@ -916,12 +913,10 @@ const LANG={
   fortuneH:"🥠 Daily Fortune Cookie", fortuneSub:"One message a day. Come back tomorrow.",
   tapCookie:"Tap the cookie", luckyNums:"Your lucky numbers",
   comeTomorrow:"Welcome back! Today's cookie is already open. A new message awaits tomorrow. 🌙",
-  cardOfDayTitle:"Card of the day",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
   palmGuideIntro:"Tap a line on the palm or in the list to read its traditional meaning.",
-  palmShapesTitle:"Hand shape (elements)", palmMountsTitle:"The mounts",
   palmCamT:"Camera", palmGalT:"Gallery",
   palmHint:"Take or choose a photo of your open palm, in good light, fingers spread.",
   palmReadBtn:"✨ Read my palm with AI", palmReading:"Reading the palm...",
@@ -1047,7 +1042,6 @@ function go(s){
   window.scrollTo(0,0);
   if(s==='fortune')renderFortune();
   if(s==='palm')renderPalm();
-  if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
   if(s==='settings')renderSettings();
 }
 
@@ -1338,12 +1332,8 @@ function importFile(e){
 }
 function clearAll(){
   if(!confirm(T('confirmClear')))return;
-  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback','dreamAssociations','cardOfDay','name','pal','light'].forEach(k=>DB.del(k));
-  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();
-  state.name='';state.pal='gold';state.light=false;applyTheme();
-  renderDreamJournal();renderAssociations();updateAiDot();renderSettings();
-  if(typeof renderCardOfDay==='function')renderCardOfDay();
-  toast(T('cleared'));
+  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback','dreamAssociations'].forEach(k=>DB.del(k));
+  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();renderAssociations();updateAiDot();renderSettings();toast(T('cleared'));
 }
 
 /* ============ ABOUT actions ============ */
@@ -1378,34 +1368,6 @@ function checkBackupNudge(){
 }
 
 /* ============ INIT ============ */
-/* ============ CARD OF THE DAY ============ */
-function renderCardOfDay(){
-  const box=document.getElementById('cardOfDay'); if(!box)return;
-  const key=todayKey();
-  let saved=DB.getJSON('cardOfDay',null);
-  if(!saved||saved.day!==key){
-    const deck=[...TAROT_MAJOR,...TAROT_MINOR];
-    const card=deck[Math.floor(Math.random()*deck.length)];
-    saved={day:key,id:card.id,rev:Math.random()<0.3};
-    DB.setJSON('cardOfDay',saved);
-  }
-  const card=[...TAROT_MAJOR,...TAROT_MINOR].find(c=>c.id===saved.id);
-  if(!card){box.innerHTML='';return;}
-  const pick={card,rev:saved.rev};
-  const name=(typeof cardName==='function')?cardName(card):card.he;
-  const short=(typeof cardShort==='function')?cardShort(pick):(saved.rev?card.rev:card.up);
-  const orient=saved.rev?U('הפוך'):U('ישר');
-  const img=(typeof cardImagePath==='function')?cardImagePath(card.id):('assets/tarot/gold-v1/card-'+card.id+'.jpg');
-  box.innerHTML=`<div class="cod-card" onclick="go('tarot')" role="button" tabindex="0">
-    <div class="cod-h">🎴 ${T('cardOfDayTitle')}</div>
-    <div class="cod-body">
-      <img class="cod-img${saved.rev?' rev':''}" src="${esc(img)}" alt="${esc(name)}" onerror="this.style.display='none'">
-      <div class="cod-txt"><b>${esc(name)}</b><span class="cod-or">${orient}</span><p>${esc(short)}</p></div>
-    </div></div>`;
-  const c=box.querySelector('.cod-card');
-  if(c)c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go('tarot');}});
-}
-
 function init(){
   if(!DB.get('firstUse'))DB.set('firstUse',Date.now());
   applyTheme();applyLang();stars();updateAiDot();
@@ -1431,7 +1393,6 @@ function init(){
 <script src="language-switch.js"></script>
 <script>
 init();
-try{renderCardOfDay();}catch(e){}
 restoreLanguageDraft();
 initDeckOffline();
 
