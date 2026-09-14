@@ -82,7 +82,8 @@ function calcNumerology(){
   }
   html+=`<div class="disc" style="margin-top:12px">${T('numDisc')}</div>`;
   res.innerHTML=html;
-  if(typeof saveHistory==='function')saveHistory('num',(name||T('numLifePath')),`${life!==null?('נתיב '+life):''}${(life!==null&&expr!==null)?' · ':''}${expr!==null?('ביטוי '+expr):''}`);
+  const body=[life!==null?(T('numLifePath')+' '+life+': '+NUM_MEANINGS[life].he+' — '+NUM_MEANINGS[life].m):'',expr!==null?(T('numExpression')+' '+expr+': '+NUM_MEANINGS[expr].he+' — '+NUM_MEANINGS[expr].m):''].filter(Boolean).join('\n\n');
+  numResult.hid=(typeof saveHistory==='function')?saveHistory('num',(name||T('numLifePath')),`${life!==null?('נתיב '+life):''}${(life!==null&&expr!==null)?' · ':''}${expr!==null?('ביטוי '+expr):''}`,{body}):null;
 }
 async function deepenNumerology(){
   const box=document.getElementById('numAi'),btn=document.getElementById('numDeepBtn');btn.disabled=true;
@@ -90,6 +91,6 @@ async function deepenNumerology(){
   const langName=LANG_NAMES[state.lang];
   const sys=`את/ה יועץ/ת נומרולוגיה חם/ה ומעורר/ת השראה. ענה/י בשפה: ${langName}. תן/י קריאה אישית זורמת שמשלבת בין המספרים, בטון מעצים ולא דטרמיניסטי. סיים/י בצעד מעשי קטן. אורך: 2-3 פסקאות. זו קריאה להשראה והרהור, לא ניבוי ודאי.`;
   const prompt=`שם: ${numResult.name||'(לא נמסר)'}\nמספר נתיב חיים: ${numResult.life??'(לא חושב)'}\nמספר ביטוי (שם): ${numResult.expr??'(לא חושב)'}\n\nתן/י קריאה נומרולוגית אישית.`;
-  try{ const ans=await callAI(prompt,sys); box.innerHTML=`<div class="ai-box"><div class="hd">🔢 ${T('numYourReading')}</div><div class="bd">${esc(ans)}</div></div>`; }
+  try{ const ans=await callAI(prompt,sys); if(typeof updateHistoryAI==='function')updateHistoryAI(numResult&&numResult.hid,ans); box.innerHTML=`<div class="ai-box"><div class="hd">🔢 ${T('numYourReading')}</div><div class="bd">${esc(ans)}</div></div>`; }
   catch(e){ box.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`; btn.disabled=false; }
 }

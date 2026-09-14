@@ -271,6 +271,11 @@ a{color:var(--gold)}
       <div class="tx"><h3 id="tCompat">תאימות</h3><p id="tCompatD">בדוק את הקשר בין שני אנשים</p></div>
       <div class="arr">‹</div>
     </button>
+    <button class="tile" onclick="go('history')">
+      <div class="ic">📜</div>
+      <div class="tx"><h3 id="tHistory">היסטוריית קריאות</h3><p id="tHistoryD">כל הקריאות שלך שמורות לקריאה חוזרת</p></div>
+      <div class="arr">‹</div>
+    </button>
   </div>
   <div id="backupReminder"></div>
   <div id="cardOfDay"></div>
@@ -347,6 +352,15 @@ a{color:var(--gold)}
     <div id="palmResult"></div>
     <div class="small" id="palmPrivacy" style="margin-top:14px;color:var(--dim)"></div>
   </div>
+</div>
+
+<!-- HISTORY -->
+<div class="screen hidden" id="s-history">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="historyH">📜 היסטוריית קריאות</h2>
+  <p class="ssub" id="historySub">כל הקריאות שלך נשמרו כאן. הקש על קריאה כדי לקרוא אותה במלואה.</p>
+  <div class="chips" id="historyFilter"></div>
+  <div id="historyList"></div>
 </div>
 
 <!-- COMPATIBILITY -->
@@ -971,6 +985,12 @@ const LANG={
   compatCalcTxt:"בדוק תאימות", compatRelNum:"מספר הקשר",
   compatDeepen:"✨ העמק עם הבינה", compatReading:"קורא את הקשר...", compatYourReading:"קריאת התאימות שלכם",
   compatDisc:"לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ ליחסים.",
+  tHistory:"היסטוריית קריאות", tHistoryD:"כל הקריאות שלך שמורות לקריאה חוזרת",
+  historyH:"📜 היסטוריית קריאות", historySub:"כל הקריאות שלך נשמרו כאן. הקש על קריאה כדי לקרוא אותה במלואה.",
+  historyEmpty:"עדיין אין קריאות שמורות. כל קריאה שתעשה תופיע כאן.",
+  historyAll:"הכל", historyClear:"נקה היסטוריה", historyConfirmClear:"למחוק את כל היסטוריית הקריאות?",
+  historyAiLabel:"קריאת הבינה", historyBodyLabel:"הקריאה",
+  histType_tarot:"טארוט", histType_dream:"חלום", histType_num:"נומרולוגיה", histType_horo:"הורוסקופ", histType_palm:"כף יד", histType_coffee:"קפה", histType_compat:"תאימות",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
@@ -1058,6 +1078,12 @@ const LANG={
   compatCalcTxt:"Check compatibility", compatRelNum:"Relationship number",
   compatDeepen:"✨ Deepen with AI", compatReading:"Reading the bond...", compatYourReading:"Your compatibility reading",
   compatDisc:"For entertainment and inspiration only — not fortune-telling or relationship advice.",
+  tHistory:"Reading history", tHistoryD:"All your readings saved to revisit",
+  historyH:"📜 Reading History", historySub:"All your readings are saved here. Tap one to read it in full.",
+  historyEmpty:"No saved readings yet. Every reading you do will appear here.",
+  historyAll:"All", historyClear:"Clear history", historyConfirmClear:"Delete all reading history?",
+  historyAiLabel:"AI reading", historyBodyLabel:"Reading",
+  histType_tarot:"Tarot", histType_dream:"Dream", histType_num:"Numerology", histType_horo:"Horoscope", histType_palm:"Palm", histType_coffee:"Coffee", histType_compat:"Compatibility",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
@@ -1192,6 +1218,7 @@ function go(s){
   if(s==='horo'&&typeof renderHoroscope==='function')renderHoroscope();
   if(s==='coffee'&&typeof renderCoffee==='function')renderCoffee();
   if(s==='compat'&&typeof renderCompat==='function')renderCompat();
+  if(s==='history'&&typeof renderHistory==='function')renderHistory();
   if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
   if(s==='settings')renderSettings();
 }
@@ -1213,6 +1240,7 @@ function applyLang(){
   set('tHoro',T('tHoro')); set('tHoroD',T('tHoroD'));
   set('tCoffee',T('tCoffee')); set('tCoffeeD',T('tCoffeeD'));
   set('tCompat',T('tCompat')); set('tCompatD',T('tCompatD'));
+  set('tHistory',T('tHistory')); set('tHistoryD',T('tHistoryD'));
   set('palmH',T('palmH')); set('palmSub',T('palmSub'));
   set('homeDisc',T('homeDisc'));
   set('back1',T('back'));
@@ -1268,6 +1296,7 @@ async function deepenTarot(){
   const prompt=`השאלה: ${currentDraw.q||'(ללא שאלה מסוימת — קריאה כללית)'}\nהפריסה (${state.lang==='he'?sp.he:sp.en}): ${cardsDesc}\n\nקרא/י את הפריסה כמכלול.`;
   try{
     const ans=await callAI(prompt,sys);
+    if(currentDraw)updateHistoryAI(currentDraw.hid,ans);
     box.innerHTML=`<div class="ai-box"><div class="hd">✨ ${state.lang==='he'?'הקריאה שלך':'Your reading'}</div><div class="bd">${esc(ans)}</div></div>`;
   }catch(e){
     box.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`;
@@ -1363,8 +1392,16 @@ function showFortune(idx,nums,returning){
 /* ============ HISTORY ============ */
 function saveHistory(type,title,sub,details){
   const h=DB.getJSON('history',[]);
-  h.unshift({type,title,sub,t:Date.now(),...(details?{details}:{})});
-  DB.setJSON('history',h.slice(0,50));
+  const id='h'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  h.unshift({id,type,title,sub,t:Date.now(),...(details?{details}:{})});
+  DB.setJSON('history',h.slice(0,100));
+  return id;
+}
+function updateHistoryAI(id,ai){
+  if(!id||!ai)return;
+  const h=DB.getJSON('history',[]);
+  const e=h.find(x=>x.id===id);
+  if(e){e.details=e.details||{};e.details.ai=ai;DB.setJSON('history',h);}
 }
 
 /* ============ SETTINGS RENDER ============ */
@@ -1581,6 +1618,7 @@ function init(){
 <script src="horoscope.js"></script>
 <script src="coffee.js"></script>
 <script src="compatibility.js"></script>
+<script src="history.js"></script>
 <script src="language-switch.js"></script>
 <script>
 init();

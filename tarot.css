@@ -89,3 +89,6 @@ html[lang="ar"] .zoom-copy p,html[lang="ar"] .dream-library details p,html[lang=
 
 /* ===== Guide illustrations (palm diagram, coffee cup) ===== */
 .guide-img{display:block;width:100%;max-width:300px;margin:8px auto 12px;border-radius:14px;border:1px solid var(--line,#2a2a35)}
+
+/* ===== History detail ===== */
+.hist-detail-label{font-weight:800;color:var(--gold,#d4af37);font-size:13px;margin:4px 0 6px}

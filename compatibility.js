@@ -54,7 +54,8 @@ function calcCompat(){
   }
   html+=`<div class="disc" style="margin-top:12px">${T('compatDisc')}</div>`;
   res.innerHTML=html;
-  if(typeof saveHistory==='function')saveHistory('compat',`${nA} + ${nB}`,`${T('compatRelNum')} ${rel}`);
+  const body=`${nA}: ${T('numLifePath')} ${lifeA}\n${nB}: ${T('numLifePath')} ${lifeB}\n\n${T('compatRelNum')} ${rel} — ${mm.he}: ${mm.m}`;
+  compatResult.hid=(typeof saveHistory==='function')?saveHistory('compat',`${nA} + ${nB}`,`${T('compatRelNum')} ${rel}`,{body}):null;
 }
 async function deepenCompat(){
   const box=document.getElementById('compatAi'),btn=document.getElementById('compatDeepBtn');btn.disabled=true;
@@ -63,6 +64,6 @@ async function deepenCompat(){
   const c=compatResult;
   const sys=`את/ה יועץ/ת תאימות נומרולוגית חם/ה ומעורר/ת השראה. ענה/י בשפה: ${langName}. תן/י קריאת תאימות זורמת בין שני האנשים לפי מספריהם, בטון חיובי ומאוזן — חוזקות הקשר וגם נקודות לתשומת לב, בלי לקבוע גורל. סיים/י בעצה קטנה אחת לקשר. אורך: 2-3 פסקאות. זו קריאה להשראה בלבד.`;
   const prompt=`אדם א': ${c.nameA||'(ללא שם)'} — מספר נתיב ${c.lifeA}\nאדם ב': ${c.nameB||'(ללא שם)'} — מספר נתיב ${c.lifeB}\nמספר הקשר המשולב: ${c.rel}\n\nתן/י קריאת תאימות אישית.`;
-  try{ const ans=await callAI(prompt,sys); box.innerHTML=`<div class="ai-box"><div class="hd">🪬 ${T('compatYourReading')}</div><div class="bd">${esc(ans)}</div></div>`; }
+  try{ const ans=await callAI(prompt,sys); if(typeof updateHistoryAI==='function')updateHistoryAI(compatResult&&compatResult.hid,ans); box.innerHTML=`<div class="ai-box"><div class="hd">🪬 ${T('compatYourReading')}</div><div class="bd">${esc(ans)}</div></div>`; }
   catch(e){ box.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`; btn.disabled=false; }
 }

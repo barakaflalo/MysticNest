@@ -7,8 +7,9 @@ function drawTarot(){
   currentDraw={q:document.getElementById('tarotQ').value.trim(),spread:state.spread,picks};
   renderTarotDraw();
   document.getElementById('drawTxt').textContent=T('redraw');
-  saveHistory('tarot',currentDraw.q||sp[state.lang==='he'?'he':'en'],picks.map(p=>cardName(p.card)).join(' · '),{
-    spread:currentDraw.spread,picks:picks.map(p=>({id:p.card.id,rev:p.rev})),deckVersion:MYSTIC_DECK.version
+  currentDraw.hid=saveHistory('tarot',currentDraw.q||sp[state.lang==='he'?'he':'en'],picks.map(p=>cardName(p.card)).join(' · '),{
+    spread:currentDraw.spread,picks:picks.map(p=>({id:p.card.id,rev:p.rev})),deckVersion:MYSTIC_DECK.version,
+    body:picks.map(p=>cardName(p.card)+' ('+(p.rev?(state.lang==='he'?'הפוך':'Reversed'):(state.lang==='he'?'ישר':'Upright'))+'): '+cardShort(p)).join('\n\n')
   });
 }
 function renderTarotDraw(){

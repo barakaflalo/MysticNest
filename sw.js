@@ -1,8 +1,8 @@
 /* MysticNest: atomic shell installation, explicit updates, cache-first versioned art. */
 importScripts('./deck-manifest.js');
-const SHELL='mysticnest-shell-v25';
+const SHELL='mysticnest-shell-v26';
 const ART='mysticnest-deck-'+MYSTIC_DECK.version;
-const CORE=['./','./index.html','./deck.html','./i18n.js','./content-en.js','./followups-i18n.js','./language-switch.js','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./dreams.js','./dream-library.js','./dream-engine.js','./improvements.js','./dream-next-data.js','./dream-next.js','./offline.js','./palm.js','./numerology.js','./horoscope.js','./coffee.js','./compatibility.js','./assets/guide/palm-diagram.webp','./assets/guide/coffee-cup.webp','./deck-manifest.js'];
+const CORE=['./','./index.html','./deck.html','./i18n.js','./content-en.js','./followups-i18n.js','./language-switch.js','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./dreams.js','./dream-library.js','./dream-engine.js','./improvements.js','./dream-next-data.js','./dream-next.js','./offline.js','./palm.js','./numerology.js','./horoscope.js','./coffee.js','./compatibility.js','./history.js','./assets/guide/palm-diagram.webp','./assets/guide/coffee-cup.webp','./deck-manifest.js'];
 const scope=new URL('./',self.location.href);
 const artPrefix=new URL(MYSTIC_DECK.base,scope).href;
 const coreURLs=new Set(CORE.map(path=>new URL(path,scope).href));

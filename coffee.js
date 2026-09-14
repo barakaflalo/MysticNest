@@ -95,6 +95,7 @@ async function readCoffee(){
   const sys=`את/ה קורא/ת בספל קפה (טאסאוגרפיה) חם/ה, סקרן/ית ומעורר/ת השראה, בגישה מסורתית-סמלית. ענה/י בשפה: ${langName}. הסתכל/י על התמונה של שאריות הקפה בספל, תאר/י אילו צורות וסמלים אפשר לדמיין בהן (לב, ציפור, עץ, קו, עיגול וכו'), ותן/י קריאה סמלית זורמת. אם התמונה אינה ספל/שאריות קפה, אמור/י זאת בעדינות ובקש/י תמונה מתאימה. טון: חם ומעצים, לא מפחיד. סיים/י בצעד מעשי קטן. אורך: 3-4 פסקאות. הבהר/י שזו קריאה להשראה והרהור בלבד, לא ניבוי.`;
   const prompt=`הנה תמונה של ספל הקפה שלי אחרי השתייה. קרא/י בשאריות בבקשה.`;
   try{ const ans=await callAI(prompt,sys,coffeeImage);
+    if(typeof saveHistory==='function')saveHistory('coffee',T('tCoffee'),new Date().toLocaleDateString(),{ai:ans});
     res.innerHTML=`<div class="ai-box"><div class="hd">☕ ${T('coffeeYourReading')}</div><div class="bd">${esc(ans)}</div></div>
       <div class="disc" style="margin-top:12px">${T('coffeeDisc')}</div>`;
   }catch(e){ res.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`; }

@@ -81,6 +81,6 @@ async function dailyHoroscope(){
   const today=new Date().toLocaleDateString(state.lang==='he'?'he-IL':'en-US',{weekday:'long',day:'numeric',month:'long'});
   const sys=`את/ה אסטרולוג/ית חם/ה ומעורר/ת השראה. ענה/י בשפה: ${langName}. תן/י הורוסקופ יומי קצר וזורם למזל הנתון, בטון חיובי ומעצים אך לא דטרמיניסטי. כלול/י נגיעה באהבה/עבודה/רגש וצעד קטן להיום. אורך: פסקה או שתיים. זו קריאה להשראה, לא ניבוי ודאי.`;
   const prompt=`מזל: ${currentSign.he} (${currentSign.en})\nתאריך: ${today}\n\nתן/י הורוסקופ יומי אישי.`;
-  try{ const ans=await callAI(prompt,sys); box.innerHTML=`<div class="ai-box"><div class="hd">${currentSign.sym} ${T('horoToday')}</div><div class="bd">${esc(ans)}</div></div>`; }
+  try{ const ans=await callAI(prompt,sys); if(typeof saveHistory==='function')saveHistory('horo',(state.lang==='he'?currentSign.he:currentSign.en),T('horoToday'),{body:currentSign.m,ai:ans}); box.innerHTML=`<div class="ai-box"><div class="hd">${currentSign.sym} ${T('horoToday')}</div><div class="bd">${esc(ans)}</div></div>`; }
   catch(e){ box.innerHTML=`<div class="ai-box"><div class="hd">⚠️</div><div class="bd">${T('aiFail')}${esc(e.message)}</div></div>`; btn.disabled=false; }
 }
