@@ -251,8 +251,14 @@ a{color:var(--gold)}
       <div class="tx"><h3 id="tPalm">קריאה בכף יד</h3><p id="tPalmD">צלם את כף ידך וגלה את סימניה</p></div>
       <div class="arr">‹</div>
     </button>
+    <button class="tile" onclick="go('num')">
+      <div class="ic">🔢</div>
+      <div class="tx"><h3 id="tNum">נומרולוגיה</h3><p id="tNumD">מספרי החיים שלך לפי שם ותאריך לידה</p></div>
+      <div class="arr">‹</div>
+    </button>
   </div>
   <div id="backupReminder"></div>
+  <div id="cardOfDay"></div>
   <div class="disc" id="homeDisc">✨ לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ מקצועי.</div>
 </div>
 
@@ -326,6 +332,22 @@ a{color:var(--gold)}
     <div id="palmResult"></div>
     <div class="small" id="palmPrivacy" style="margin-top:14px;color:var(--dim)"></div>
   </div>
+</div>
+
+<!-- NUMEROLOGY -->
+<div class="screen hidden" id="s-num">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="numH">🔢 נומרולוגיה</h2>
+  <p class="ssub" id="numSub">הכנס שם ותאריך לידה לחישוב מספרי החיים שלך.</p>
+
+  <label class="lbl" id="lblNumName">השם המלא (אופציונלי)</label>
+  <input class="field" id="numName" placeholder="למשל: ישראל ישראלי">
+
+  <label class="lbl" id="lblNumDate">תאריך לידה</label>
+  <input class="field" id="numDate" type="date">
+
+  <button class="btn" id="numCalcBtn" onclick="calcNumerology()">🔢 <span>חשב את המספרים שלי</span></button>
+  <div id="numResult"></div>
 </div>
 
 <!-- SETTINGS -->
@@ -855,10 +877,19 @@ const LANG={
   fortuneH:"🥠 עוגיית המזל היומית", fortuneSub:"מסר אחד ליום. חזור מחר למסר חדש.",
   tapCookie:"הקש על העוגייה", luckyNums:"מספרי המזל שלך",
   comeTomorrow:"חזרת! העוגייה של היום כבר נפתחה. מסר חדש יחכה לך מחר. 🌙",
+  cardOfDayTitle:"קלף היום",
+  tNum:"נומרולוגיה", tNumD:"מספרי החיים שלך לפי שם ותאריך לידה",
+  numH:"🔢 נומרולוגיה", numSub:"הכנס שם ותאריך לידה לחישוב מספרי החיים שלך.",
+  lblNumName:"השם המלא (אופציונלי)", numNamePlace:"למשל: ישראל ישראלי",
+  lblNumDate:"תאריך לידה", numCalcTxt:"חשב את המספרים שלי",
+  numLifePath:"מספר נתיב החיים", numExpression:"מספר הביטוי (השם)",
+  numDeepen:"✨ העמק עם הבינה", numReading:"קורא את המספרים...", numYourReading:"הקריאה שלך",
+  numDisc:"לבידור והשראה בלבד — נומרולוגיה אינה מדע ואינה ניבוי עתיד.",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
   palmGuideIntro:"הקש על קו בכף היד או ברשימה כדי לקרוא את משמעותו המסורתית.",
+  palmShapesTitle:"צורת כף היד (יסודות)", palmMountsTitle:"הגבעות (מאונטיינים)",
   palmCamT:"מצלמה", palmGalT:"גלריה",
   palmHint:"צלם או בחר תמונה של כף היד הפתוחה, באור טוב, כשהאצבעות פרושות.",
   palmReadBtn:"✨ קרא את כף ידי עם הבינה", palmReading:"קורא את כף היד...",
@@ -913,10 +944,19 @@ const LANG={
   fortuneH:"🥠 Daily Fortune Cookie", fortuneSub:"One message a day. Come back tomorrow.",
   tapCookie:"Tap the cookie", luckyNums:"Your lucky numbers",
   comeTomorrow:"Welcome back! Today's cookie is already open. A new message awaits tomorrow. 🌙",
+  cardOfDayTitle:"Card of the day",
+  tNum:"Numerology", tNumD:"Your life numbers from name and birth date",
+  numH:"🔢 Numerology", numSub:"Enter a name and birth date to calculate your life numbers.",
+  lblNumName:"Full name (optional)", numNamePlace:"e.g. Jane Doe",
+  lblNumDate:"Birth date", numCalcTxt:"Calculate my numbers",
+  numLifePath:"Life Path number", numExpression:"Expression number (name)",
+  numDeepen:"✨ Deepen with AI", numReading:"Reading the numbers...", numYourReading:"Your reading",
+  numDisc:"For entertainment and inspiration only — numerology is not science or fortune-telling.",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
   palmGuideIntro:"Tap a line on the palm or in the list to read its traditional meaning.",
+  palmShapesTitle:"Hand shape (elements)", palmMountsTitle:"The mounts",
   palmCamT:"Camera", palmGalT:"Gallery",
   palmHint:"Take or choose a photo of your open palm, in good light, fingers spread.",
   palmReadBtn:"✨ Read my palm with AI", palmReading:"Reading the palm...",
@@ -1042,6 +1082,8 @@ function go(s){
   window.scrollTo(0,0);
   if(s==='fortune')renderFortune();
   if(s==='palm')renderPalm();
+  if(s==='num'&&typeof renderNumerology==='function')renderNumerology();
+  if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
   if(s==='settings')renderSettings();
 }
 
@@ -1058,6 +1100,7 @@ function applyLang(){
   set('tDream',T('tDream')); set('tDreamD',T('tDreamD'));
   set('tFortune',T('tFortune')); set('tFortuneD',T('tFortuneD'));
   set('tPalm',T('tPalm')); set('tPalmD',T('tPalmD'));
+  set('tNum',T('tNum')); set('tNumD',T('tNumD'));
   set('palmH',T('palmH')); set('palmSub',T('palmSub'));
   set('homeDisc',T('homeDisc'));
   set('back1',T('back'));
@@ -1332,8 +1375,12 @@ function importFile(e){
 }
 function clearAll(){
   if(!confirm(T('confirmClear')))return;
-  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback','dreamAssociations'].forEach(k=>DB.del(k));
-  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();renderDreamJournal();renderAssociations();updateAiDot();renderSettings();toast(T('cleared'));
+  ['history','fortune','ai','dreamJournal','dreamMeta','readingFeedback','dreamAssociations','cardOfDay','name','pal','light'].forEach(k=>DB.del(k));
+  AI={provider:null,key:'',model:''};currentDream=null;for(const id of ['dreamText','dreamEmotion','dreamEnding','dreamFocus','dreamSignificance','dreamPersonal'])document.getElementById(id).value='';document.getElementById('dreamResult').replaceChildren();
+  state.name='';state.pal='gold';state.light=false;applyTheme();
+  renderDreamJournal();renderAssociations();updateAiDot();renderSettings();
+  if(typeof renderCardOfDay==='function')renderCardOfDay();
+  toast(T('cleared'));
 }
 
 /* ============ ABOUT actions ============ */
@@ -1368,6 +1415,34 @@ function checkBackupNudge(){
 }
 
 /* ============ INIT ============ */
+/* ============ CARD OF THE DAY ============ */
+function renderCardOfDay(){
+  const box=document.getElementById('cardOfDay'); if(!box)return;
+  const key=todayKey();
+  let saved=DB.getJSON('cardOfDay',null);
+  if(!saved||saved.day!==key){
+    const deck=[...TAROT_MAJOR,...TAROT_MINOR];
+    const card=deck[Math.floor(Math.random()*deck.length)];
+    saved={day:key,id:card.id,rev:Math.random()<0.3};
+    DB.setJSON('cardOfDay',saved);
+  }
+  const card=[...TAROT_MAJOR,...TAROT_MINOR].find(c=>c.id===saved.id);
+  if(!card){box.innerHTML='';return;}
+  const pick={card,rev:saved.rev};
+  const name=(typeof cardName==='function')?cardName(card):card.he;
+  const short=(typeof cardShort==='function')?cardShort(pick):(saved.rev?card.rev:card.up);
+  const orient=saved.rev?U('הפוך'):U('ישר');
+  const img=(typeof cardImagePath==='function')?cardImagePath(card.id):('assets/tarot/gold-v1/card-'+card.id+'.jpg');
+  box.innerHTML=`<div class="cod-card" onclick="go('tarot')" role="button" tabindex="0">
+    <div class="cod-h">🎴 ${T('cardOfDayTitle')}</div>
+    <div class="cod-body">
+      <img class="cod-img${saved.rev?' rev':''}" src="${esc(img)}" alt="${esc(name)}" onerror="this.style.display='none'">
+      <div class="cod-txt"><b>${esc(name)}</b><span class="cod-or">${orient}</span><p>${esc(short)}</p></div>
+    </div></div>`;
+  const c=box.querySelector('.cod-card');
+  if(c)c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go('tarot');}});
+}
+
 function init(){
   if(!DB.get('firstUse'))DB.set('firstUse',Date.now());
   applyTheme();applyLang();stars();updateAiDot();
@@ -1390,9 +1465,11 @@ function init(){
 <script src="dream-next.js"></script>
 <script src="offline.js"></script>
 <script src="palm.js"></script>
+<script src="numerology.js"></script>
 <script src="language-switch.js"></script>
 <script>
 init();
+try{renderCardOfDay();}catch(e){}
 restoreLanguageDraft();
 initDeckOffline();
 
