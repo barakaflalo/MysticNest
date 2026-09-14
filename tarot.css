@@ -92,3 +92,12 @@ html[lang="ar"] .zoom-copy p,html[lang="ar"] .dream-library details p,html[lang=
 
 /* ===== History detail ===== */
 .hist-detail-label{font-weight:800;color:var(--gold,#d4af37);font-size:13px;margin:4px 0 6px}
+
+/* ===== Interactive palm diagram hotspots ===== */
+.palm-diagram-wrap{position:relative;width:100%;max-width:300px;margin:8px auto 12px}
+.palm-diagram-wrap .guide-img{max-width:100%}
+.palm-hot{position:absolute;width:26px;height:26px;border-radius:50%;transform:translate(-50%,-50%);
+  background:var(--c);border:2px solid #fff3;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 30%,transparent),0 0 12px var(--c);
+  cursor:pointer;padding:0;animation:palmPulse 2s infinite ease-in-out}
+.palm-hot:active{transform:translate(-50%,-50%) scale(.85)}
+@keyframes palmPulse{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent),0 0 8px var(--c)}50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--c) 15%,transparent),0 0 16px var(--c)}}

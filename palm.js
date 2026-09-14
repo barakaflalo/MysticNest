@@ -76,8 +76,30 @@ function renderPalm(){
 }
 
 /* ---- offline guide: diagram + line list ---- */
+/* hotspot positions (% of image) roughly over each line, matched to PALM_LINES colors */
+const PALM_HOTSPOTS=[
+  {id:"sun",   x:61, y:44, c:"#f0a074"},
+  {id:"heart", x:74, y:48, c:"#e0567a"},
+  {id:"head",  x:66, y:56, c:"#d4af37"},
+  {id:"fate",  x:55, y:64, c:"#8a7cff"},
+  {id:"life",  x:45, y:61, c:"#4fbf8f"},
+];
 function palmDiagram(){
-  return `<img class="guide-img" src="assets/guide/palm-diagram.webp" alt="${T('palmH')}" onerror="this.style.display='none'">`;
+  let dots='';
+  PALM_HOTSPOTS.forEach(h=>{
+    dots+=`<button class="palm-hot" style="left:${h.x}%;top:${h.y}%;--c:${h.c}" aria-label="${h.id}" onclick="palmJump('${h.id}')"></button>`;
+  });
+  return `<div class="palm-diagram-wrap">
+    <img class="guide-img" style="margin:0" src="assets/guide/palm-diagram.webp" alt="${T('palmH')}" onerror="this.style.display='none'">
+    ${dots}
+  </div>`;
+}
+function palmJump(id){
+  const card=document.getElementById('pl-'+id); if(!card)return;
+  card.scrollIntoView({behavior:'smooth',block:'center'});
+  card.style.transition='border-color .2s';
+  card.style.borderColor='var(--gold,#d4af37)';
+  setTimeout(()=>{card.style.borderColor='';},1400);
 }
 function renderPalmGuide(){
   const box=document.getElementById('palmGuide');
