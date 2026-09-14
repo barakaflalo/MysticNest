@@ -261,6 +261,11 @@ a{color:var(--gold)}
       <div class="tx"><h3 id="tHoro">הורוסקופ ומזלות</h3><p id="tHoroD">אישיות המזל שלך וקריאה יומית</p></div>
       <div class="arr">‹</div>
     </button>
+    <button class="tile" onclick="go('coffee')">
+      <div class="ic">☕</div>
+      <div class="tx"><h3 id="tCoffee">קריאה בקפה</h3><p id="tCoffeeD">צלם את שאריות הספל וגלה את סימניהן</p></div>
+      <div class="arr">‹</div>
+    </button>
   </div>
   <div id="backupReminder"></div>
   <div id="cardOfDay"></div>
@@ -336,6 +341,30 @@ a{color:var(--gold)}
     <div id="palmPreview"></div>
     <div id="palmResult"></div>
     <div class="small" id="palmPrivacy" style="margin-top:14px;color:var(--dim)"></div>
+  </div>
+</div>
+
+<!-- COFFEE READING -->
+<div class="screen hidden" id="s-coffee">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="coffeeH">☕ קריאה בקפה</h2>
+  <p class="ssub" id="coffeeSub">שתי דרכים: מדריך הסמלים, וקריאה מצילום דרך הבינה.</p>
+  <div class="chips" id="coffeeModeChips"></div>
+  <div id="coffeeGuide"></div>
+  <div id="coffeePhoto" class="hidden">
+    <div class="palm-drop">
+      <div class="palm-ic">☕</div>
+      <p id="coffeeHint" class="small"></p>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn" style="margin:0;flex:1" onclick="document.getElementById('coffeeCam').click()">📷 <span id="coffeeCamT">מצלמה</span></button>
+        <button class="btn ghost" style="margin:0;flex:1" onclick="document.getElementById('coffeeGal').click()">🖼️ <span id="coffeeGalT">גלריה</span></button>
+      </div>
+    </div>
+    <input type="file" id="coffeeCam" accept="image/*" capture="environment" class="hidden" onchange="coffeePicked(event)">
+    <input type="file" id="coffeeGal" accept="image/*" class="hidden" onchange="coffeePicked(event)">
+    <div id="coffeePreview"></div>
+    <div id="coffeeResult"></div>
+    <div class="small" id="coffeePrivacy" style="margin-top:14px;color:var(--dim)"></div>
   </div>
 </div>
 
@@ -904,6 +933,15 @@ const LANG={
   horoDaily:"✨ הורוסקופ יומי עם הבינה", horoReading:"קורא את הכוכבים...", horoToday:"ההורוסקופ שלך להיום",
   horoDisc:"לבידור והשראה בלבד — אסטרולוגיה אינה מדע ואינה ניבוי עתיד.",
   horoEl_fire:"אש", horoEl_earth:"אדמה", horoEl_air:"אוויר", horoEl_water:"מים",
+  tCoffee:"קריאה בקפה", tCoffeeD:"צלם את שאריות הספל וגלה את סימניהן",
+  coffeeH:"☕ קריאה בקפה", coffeeSub:"שתי דרכים: מדריך הסמלים, וקריאה מצילום דרך הבינה.",
+  coffeeModeGuide:"📖 מדריך הסמלים", coffeeModePhoto:"📷 קריאה מצילום",
+  coffeeGuideIntro:"סמלים נפוצים שאפשר לזהות בשאריות הקפה, ומשמעותם המסורתית.",
+  coffeeHint:"הפוך את הספל על הצלוחית, סובב, וצלם את שאריות הקפה בפנים באור טוב.",
+  coffeeReadBtn:"✨ קרא את הספל שלי עם הבינה", coffeeReading:"קורא את הספל...", coffeeYourReading:"הקריאה שלך",
+  coffeeNoAI:"קריאה מצילום דורשת חיבור בינה (Pro). אפשר לחבר מפתח אישי בהגדרות. בינתיים אפשר לעיין במדריך הסמלים שעובד תמיד.",
+  coffeePrivacy:"🔒 התמונה נשלחת רק לספק הבינה שבחרת לצורך הקריאה, ואינה נשמרת באפליקציה או נשלחת לשום מקום אחר.",
+  coffeeDisc:"לבידור והשראה בלבד — קריאה בקפה אינה מדע ואינה ניבוי עתיד.",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
@@ -976,6 +1014,15 @@ const LANG={
   horoDaily:"✨ Daily horoscope with AI", horoReading:"Reading the stars...", horoToday:"Your horoscope for today",
   horoDisc:"For entertainment and inspiration only — astrology is not science or fortune-telling.",
   horoEl_fire:"Fire", horoEl_earth:"Earth", horoEl_air:"Air", horoEl_water:"Water",
+  tCoffee:"Coffee reading", tCoffeeD:"Photograph the grounds and discover their signs",
+  coffeeH:"☕ Coffee Reading", coffeeSub:"Two ways: a symbol guide, and a reading from your photo via AI.",
+  coffeeModeGuide:"📖 Symbol guide", coffeeModePhoto:"📷 Photo reading",
+  coffeeGuideIntro:"Common symbols you can spot in the coffee grounds, and their traditional meanings.",
+  coffeeHint:"Turn the cup over onto the saucer, swirl, then photograph the grounds inside in good light.",
+  coffeeReadBtn:"✨ Read my cup with AI", coffeeReading:"Reading the cup...", coffeeYourReading:"Your reading",
+  coffeeNoAI:"Photo reading needs an AI connection (Pro). You can connect your own key in Settings. Meanwhile, browse the symbol guide — it always works.",
+  coffeePrivacy:"🔒 The image is sent only to the AI provider you chose, for the reading. It is not stored in the app or sent anywhere else.",
+  coffeeDisc:"For entertainment and inspiration only — coffee reading is not science or fortune-telling.",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
@@ -1108,6 +1155,7 @@ function go(s){
   if(s==='palm')renderPalm();
   if(s==='num'&&typeof renderNumerology==='function')renderNumerology();
   if(s==='horo'&&typeof renderHoroscope==='function')renderHoroscope();
+  if(s==='coffee'&&typeof renderCoffee==='function')renderCoffee();
   if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
   if(s==='settings')renderSettings();
 }
@@ -1127,6 +1175,7 @@ function applyLang(){
   set('tPalm',T('tPalm')); set('tPalmD',T('tPalmD'));
   set('tNum',T('tNum')); set('tNumD',T('tNumD'));
   set('tHoro',T('tHoro')); set('tHoroD',T('tHoroD'));
+  set('tCoffee',T('tCoffee')); set('tCoffeeD',T('tCoffeeD'));
   set('palmH',T('palmH')); set('palmSub',T('palmSub'));
   set('homeDisc',T('homeDisc'));
   set('back1',T('back'));
@@ -1493,6 +1542,7 @@ function init(){
 <script src="palm.js"></script>
 <script src="numerology.js"></script>
 <script src="horoscope.js"></script>
+<script src="coffee.js"></script>
 <script src="language-switch.js"></script>
 <script>
 init();
