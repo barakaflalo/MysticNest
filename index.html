@@ -266,6 +266,11 @@ a{color:var(--gold)}
       <div class="tx"><h3 id="tCoffee">קריאה בקפה</h3><p id="tCoffeeD">צלם את שאריות הספל וגלה את סימניהן</p></div>
       <div class="arr">‹</div>
     </button>
+    <button class="tile" onclick="go('compat')">
+      <div class="ic">🪬</div>
+      <div class="tx"><h3 id="tCompat">תאימות</h3><p id="tCompatD">בדוק את הקשר בין שני אנשים</p></div>
+      <div class="arr">‹</div>
+    </button>
   </div>
   <div id="backupReminder"></div>
   <div id="cardOfDay"></div>
@@ -342,6 +347,24 @@ a{color:var(--gold)}
     <div id="palmResult"></div>
     <div class="small" id="palmPrivacy" style="margin-top:14px;color:var(--dim)"></div>
   </div>
+</div>
+
+<!-- COMPATIBILITY -->
+<div class="screen hidden" id="s-compat">
+  <button class="backbtn" onclick="go('home')">› <span>חזרה</span></button>
+  <h2 class="stitle" id="compatH">🪬 תאימות</h2>
+  <p class="ssub" id="compatSub">הכנס שם ותאריך לידה של שני אנשים.</p>
+
+  <label class="lbl" id="lblCompatA">אדם ראשון</label>
+  <input class="field" id="compatNameA" placeholder="שם (אופציונלי)" style="margin-bottom:8px">
+  <input class="field" id="compatDateA" type="date">
+
+  <label class="lbl" id="lblCompatB">אדם שני</label>
+  <input class="field" id="compatNameB" placeholder="שם (אופציונלי)" style="margin-bottom:8px">
+  <input class="field" id="compatDateB" type="date">
+
+  <button class="btn" id="compatCalcBtn" onclick="calcCompat()">🪬 <span>בדוק תאימות</span></button>
+  <div id="compatResult"></div>
 </div>
 
 <!-- COFFEE READING -->
@@ -942,6 +965,12 @@ const LANG={
   coffeeNoAI:"קריאה מצילום דורשת חיבור בינה (Pro). אפשר לחבר מפתח אישי בהגדרות. בינתיים אפשר לעיין במדריך הסמלים שעובד תמיד.",
   coffeePrivacy:"🔒 התמונה נשלחת רק לספק הבינה שבחרת לצורך הקריאה, ואינה נשמרת באפליקציה או נשלחת לשום מקום אחר.",
   coffeeDisc:"לבידור והשראה בלבד — קריאה בקפה אינה מדע ואינה ניבוי עתיד.",
+  tCompat:"תאימות", tCompatD:"בדוק את הקשר בין שני אנשים",
+  compatH:"🪬 תאימות", compatSub:"הכנס שם ותאריך לידה של שני אנשים.",
+  compatPersonA:"אדם ראשון", compatPersonB:"אדם שני", compatNamePlace:"שם (אופציונלי)",
+  compatCalcTxt:"בדוק תאימות", compatRelNum:"מספר הקשר",
+  compatDeepen:"✨ העמק עם הבינה", compatReading:"קורא את הקשר...", compatYourReading:"קריאת התאימות שלכם",
+  compatDisc:"לבידור והשראה בלבד — אינו ניבוי עתיד או ייעוץ ליחסים.",
   tPalm:"קריאה בכף יד", tPalmD:"צלם את כף ידך וגלה את סימניה",
   palmH:"🖐️ קריאה בכף יד", palmSub:"שתי דרכים: מדריך הקווים שעובד תמיד, וקריאה אישית מהצילום דרך הבינה.",
   palmModeGuide:"📖 מדריך הקווים", palmModePhoto:"📷 קריאה מצילום",
@@ -1023,6 +1052,12 @@ const LANG={
   coffeeNoAI:"Photo reading needs an AI connection (Pro). You can connect your own key in Settings. Meanwhile, browse the symbol guide — it always works.",
   coffeePrivacy:"🔒 The image is sent only to the AI provider you chose, for the reading. It is not stored in the app or sent anywhere else.",
   coffeeDisc:"For entertainment and inspiration only — coffee reading is not science or fortune-telling.",
+  tCompat:"Compatibility", tCompatD:"Explore the bond between two people",
+  compatH:"🪬 Compatibility", compatSub:"Enter a name and birth date for two people.",
+  compatPersonA:"First person", compatPersonB:"Second person", compatNamePlace:"Name (optional)",
+  compatCalcTxt:"Check compatibility", compatRelNum:"Relationship number",
+  compatDeepen:"✨ Deepen with AI", compatReading:"Reading the bond...", compatYourReading:"Your compatibility reading",
+  compatDisc:"For entertainment and inspiration only — not fortune-telling or relationship advice.",
   tPalm:"Palm reading", tPalmD:"Photograph your palm and discover its signs",
   palmH:"🖐️ Palm Reading", palmSub:"Two ways: a line guide that always works, and a personal reading from your photo via AI.",
   palmModeGuide:"📖 Line guide", palmModePhoto:"📷 Photo reading",
@@ -1156,6 +1191,7 @@ function go(s){
   if(s==='num'&&typeof renderNumerology==='function')renderNumerology();
   if(s==='horo'&&typeof renderHoroscope==='function')renderHoroscope();
   if(s==='coffee'&&typeof renderCoffee==='function')renderCoffee();
+  if(s==='compat'&&typeof renderCompat==='function')renderCompat();
   if(s==='home'&&typeof renderCardOfDay==='function')renderCardOfDay();
   if(s==='settings')renderSettings();
 }
@@ -1176,6 +1212,7 @@ function applyLang(){
   set('tNum',T('tNum')); set('tNumD',T('tNumD'));
   set('tHoro',T('tHoro')); set('tHoroD',T('tHoroD'));
   set('tCoffee',T('tCoffee')); set('tCoffeeD',T('tCoffeeD'));
+  set('tCompat',T('tCompat')); set('tCompatD',T('tCompatD'));
   set('palmH',T('palmH')); set('palmSub',T('palmSub'));
   set('homeDisc',T('homeDisc'));
   set('back1',T('back'));
@@ -1543,6 +1580,7 @@ function init(){
 <script src="numerology.js"></script>
 <script src="horoscope.js"></script>
 <script src="coffee.js"></script>
+<script src="compatibility.js"></script>
 <script src="language-switch.js"></script>
 <script>
 init();
