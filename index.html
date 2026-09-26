@@ -1141,7 +1141,7 @@ const AI_PROVIDERS={
     models:["claude-haiku-4-5-20251001","claude-sonnet-4-6","claude-opus-4-8"],
     link:"https://console.anthropic.com"},
   gemini:{name:"Gemini (Google)",icon:"✨",tag:"free",
-    models:["gemini-flash-latest","gemini-2.5-flash","gemini-3-flash"],
+    models:["gemini-flash-latest","gemini-3.6-flash","gemini-3.5-flash"],
     link:"https://aistudio.google.com/app/apikey"},
   openai:{name:"ChatGPT (OpenAI)",icon:"💬",tag:"api",
     models:["gpt-4o-mini","gpt-4o"],
@@ -1158,7 +1158,9 @@ async function callAI(prompt,sys,image){
   if(!AI.provider||!AI.key) throw new Error("no-ai");
   const key=cleanKey(AI.key);
   const p=AI.provider;
-  const models = AI.model ? [AI.model,...AI_PROVIDERS[p].models.filter(m=>m!==AI.model)] : AI_PROVIDERS[p].models.slice();
+  const DEAD_MODELS=["gemini-2.5-flash","gemini-3-flash","gemini-2.0-flash","gemini-1.5-flash","gemini-2.5-pro"];
+  const savedModel=(AI.model&&!DEAD_MODELS.includes(AI.model))?AI.model:null;
+  const models = savedModel ? [savedModel,...AI_PROVIDERS[p].models.filter(m=>m!==savedModel)] : AI_PROVIDERS[p].models.slice();
   let lastErr;
   for(const model of models){
     try{ return await callProvider(p,key,model,prompt,sys,image); }
