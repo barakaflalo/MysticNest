@@ -1629,6 +1629,7 @@ init();
 try{renderCardOfDay();}catch(e){}
 restoreLanguageDraft();
 initDeckOffline();
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
 
 </script>
 </body>

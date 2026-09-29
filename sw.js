@@ -1,6 +1,6 @@
-/* MysticNest: atomic shell installation, explicit updates, cache-first versioned art. */
+/* MysticNest: resilient install, network-first shell with cache fallback (never a blank 'not connected'), cache-first versioned art. */
 importScripts('./deck-manifest.js');
-const SHELL='mysticnest-shell-v31';
+const SHELL='mysticnest-shell-v32';
 const ART='mysticnest-deck-'+MYSTIC_DECK.version;
 const CORE=['./','./index.html','./deck.html','./i18n.js','./content-en.js','./followups-i18n.js','./language-switch.js','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./dreams.js','./dream-library.js','./dream-engine.js','./improvements.js','./dream-next-data.js','./dream-next.js','./offline.js','./palm.js','./numerology.js','./horoscope.js','./coffee.js','./compatibility.js','./history.js','./assets/guide/palm-diagram.webp','./assets/guide/coffee-cup.webp','./deck-manifest.js'];
 const scope=new URL('./',self.location.href);
@@ -34,11 +34,25 @@ async function getArt(request){
     return response;
   }catch{return new Response('',{status:503,statusText:'Artwork unavailable'});}
 }
+function offlinePage(){
+  const html='<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MysticNest</title></head>'+
+  '<body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0d0d10;color:#f3ecd8;font-family:system-ui,sans-serif;text-align:center;padding:24px">'+
+  '<div><div style="font-size:56px">🔮</div><h2 style="color:#d4af37">אין חיבור כרגע</h2><p style="color:#9a927e">האפליקציה צריכה חיבור פעם אחת כדי להיטען. בדוק את האינטרנט ונסה שוב.</p>'+
+  '<button onclick="location.reload()" style="background:#d4af37;color:#1a1508;border:0;border-radius:12px;padding:12px 26px;font-size:16px;font-weight:800">נסה שוב</button></div></body></html>';
+  return new Response(html,{status:200,headers:{'content-type':'text/html; charset=utf-8'}});
+}
 async function getCore(request){
-  const cache=await caches.open(SHELL),cached=await cache.match(request,{ignoreSearch:true});
-  if(cached)return cached;
-  if(request.mode==='navigate')return (await cache.match('./index.html'))||Response.error();
-  try{return await fetch(request);}catch{return Response.error();}
+  const cache=await caches.open(SHELL);
+  const u=new URL(request.url);u.search='';u.hash='';const key=u.href;
+  // Network-first (4s), fall back to cache, then to a friendly offline page. Never returns an error page.
+  const net=fetch(request).catch(()=>null);
+  const res=await Promise.race([net,new Promise(r=>setTimeout(()=>r(null),4000))]);
+  if(res&&res.ok){cache.put(key,res.clone()).catch(()=>{});return res;}
+  const cached=(await cache.match(key,{ignoreSearch:true}))||(request.mode==='navigate'?await cache.match(new URL('./index.html',scope).href):null);
+  if(cached){net.then(r=>{if(r&&r.ok)cache.put(key,r.clone()).catch(()=>{});});return cached;}
+  const late=res||await net;
+  if(late)return late;
+  return request.mode==='navigate'?offlinePage():Response.error();
 }
 self.addEventListener('fetch',event=>{
   const request=event.request,url=new URL(request.url);
