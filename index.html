@@ -2,6 +2,10 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<script>
+/* MysticNest moved to its own address. Redirect ONLY from the old GitHub Pages address. */
+(function(){try{if(location.hostname==='barakaflalo.github.io'){location.replace('https://mysticnest.pages.dev/'+location.search+location.hash);}}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0d0d10">
 <title>MysticNest · מיסטיק</title>
@@ -1537,7 +1541,7 @@ function clearAll(){
 }
 
 /* ============ ABOUT actions ============ */
-function openStore(){window.open('https://barakaflalo.github.io/appnest','_blank');}
+function openStore(){window.open('https://appnest-store.pages.dev','_blank');}
 function shareApp(){if(navigator.share){navigator.share({title:'MysticNest',text:state.lang==='he'?'🔮 MysticNest — טארוט, פירוש חלומות ועוגיית מזל':'🔮 MysticNest — Tarot, dream readings and a daily fortune cookie',url:location.href});}else{navigator.clipboard.writeText(location.href);toast(T('copied'));}}
 function sendFeedback(){location.href='mailto:appnest55@gmail.com?subject=MysticNest%20Feedback';}
 function openPrivacy(){window.open('privacy_policy.html?lang='+contentLang(),'_blank');}
