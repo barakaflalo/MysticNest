@@ -1,9 +1,11 @@
 /* MysticNest: resilient install, network-first shell with cache fallback (never a blank 'not connected'), cache-first versioned art. */
 importScripts('./deck-manifest.js');
-const SHELL='mysticnest-shell-v32';
+const SHELL='mysticnest-shell-v33';
 const ART='mysticnest-deck-'+MYSTIC_DECK.version;
 const CORE=['./','./index.html','./deck.html','./i18n.js','./content-en.js','./followups-i18n.js','./language-switch.js','./manifest.json','./icon-192.png','./icon-512.png','./privacy_policy.html','./tarot.css','./tarot.js','./card-details.js','./dreams.js','./dream-library.js','./dream-engine.js','./improvements.js','./dream-next-data.js','./dream-next.js','./offline.js','./palm.js','./numerology.js','./horoscope.js','./coffee.js','./compatibility.js','./history.js','./assets/guide/palm-diagram.webp','./assets/guide/coffee-cup.webp','./deck-manifest.js'];
 const scope=new URL('./',self.location.href);
+// Cloudflare Pages redirects *.html -> clean URL (/index.html -> /). Chrome refuses a redirected response served to a page load (ERR_FAILED), so strip the redirect flag.
+async function clean(res){if(!res||!res.redirected)return res;const body=await res.blob();return new Response(body,{status:res.status,statusText:res.statusText,headers:res.headers});}
 const artPrefix=new URL(MYSTIC_DECK.base,scope).href;
 const coreURLs=new Set(CORE.map(path=>new URL(path,scope).href));
 self.addEventListener('install',event=>{event.waitUntil((async()=>{
@@ -11,13 +13,13 @@ self.addEventListener('install',event=>{event.waitUntil((async()=>{
   // Resilient install: cache each file on its own so one failed/slow file can't abort the whole shell (fixes intermittent 'not connected').
   await Promise.allSettled(CORE.map(async path=>{
     const req=new Request(new URL(path,scope),{cache:'reload'});
-    try{const res=await fetch(req); if(res&&res.ok) await cache.put(new URL(path,scope).href,res);}catch(e){}
+    try{const res=await clean(await fetch(req)); if(res&&res.ok) await cache.put(new URL(path,scope).href,res);}catch(e){}
   }));
   // Guarantee the offline fallback exists even if some files failed; retry the essentials once from the HTTP cache.
   const essentials=['./','./index.html','./deck-manifest.js','./i18n.js','./content-en.js','./tarot.js','./dreams.js'];
   await Promise.allSettled(essentials.map(async path=>{
     const href=new URL(path,scope).href; if(await cache.match(href,{ignoreSearch:true}))return;
-    try{const res=await fetch(new URL(path,scope)); if(res&&res.ok) await cache.put(href,res);}catch(e){}
+    try{const res=await clean(await fetch(new URL(path,scope))); if(res&&res.ok) await cache.put(href,res);}catch(e){}
   }));
 })());});
 self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')event.waitUntil(self.skipWaiting());});
@@ -45,11 +47,11 @@ async function getCore(request){
   const cache=await caches.open(SHELL);
   const u=new URL(request.url);u.search='';u.hash='';const key=u.href;
   // Network-first (4s), fall back to cache, then to a friendly offline page. Never returns an error page.
-  const net=fetch(request).catch(()=>null);
+  const net=fetch(request.mode==='navigate'?u.href:request).then(clean).catch(()=>null);
   const res=await Promise.race([net,new Promise(r=>setTimeout(()=>r(null),4000))]);
   if(res&&res.ok){cache.put(key,res.clone()).catch(()=>{});return res;}
-  const cached=(await cache.match(key,{ignoreSearch:true}))||(request.mode==='navigate'?await cache.match(new URL('./index.html',scope).href):null);
-  if(cached){net.then(r=>{if(r&&r.ok)cache.put(key,r.clone()).catch(()=>{});});return cached;}
+  let cached=(await cache.match(key,{ignoreSearch:true}))||(request.mode==='navigate'?await cache.match(new URL('./index.html',scope).href):null);
+  if(cached){cached=await clean(cached);net.then(r=>{if(r&&r.ok)cache.put(key,r.clone()).catch(()=>{});});return cached;}
   const late=res||await net;
   if(late)return late;
   return request.mode==='navigate'?offlinePage():Response.error();

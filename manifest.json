@@ -2,7 +2,7 @@
   "name": "MysticNest · מיסטיק",
   "short_name": "מיסטיק",
   "description": "קלפי טארוט, פירוש חלומות ועוגיית מזל יומית — לבידור והשראה.",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
